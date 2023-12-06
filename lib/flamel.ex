@@ -42,6 +42,58 @@ defmodule Flamel do
   end
 
   @doc """
+  Takes an {:ok, value} tuple and returns the value or nil
+
+  ## Examples
+
+      iex> Flamel.unwrap_ok_or_nil({:ok, []})
+      []
+
+      iex> Flamel.unwrap_ok_or_nil({:error, "message"})
+      nil
+  """
+  def unwrap_ok_or_nil({:ok, value}) do
+    value
+  end
+
+  def unwrap_ok_or_nil(_) do
+    nil
+  end
+
+  @doc """
+  Takes an {:error, value} tuple and returns the value or nil 
+
+  ## Examples
+
+      iex> Flamel.unwrap_error_or_nil({:ok, []})
+      nil
+
+      iex> Flamel.unwrap_error_or_nil({:error, "message"})
+      "message"
+  """
+  def unwrap_error_or_nil({:error, value}) do
+    value
+  end
+
+  def unwrap_error_or_nil(_) do
+    nil
+  end
+
+  @doc """
+  Takes an {:ok, value} or {:error, message} tuple and returns the value
+
+  ## Examples
+
+      iex> Flamel.unwrap({:ok, []})
+      []
+
+      iex> Flamel.unwrap({:error, "message"})
+      "message"
+  """
+  def unwrap({:ok, value}), do: value
+  def unwrap({:error, value}), do: value
+
+  @doc """
   Checks if something is empty?
 
   ## Examples
