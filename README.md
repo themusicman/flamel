@@ -1,5 +1,7 @@
 # Flamel
 
+[![Elixir CI](https://github.com/themusicman/flamel/actions/workflows/elixir.yml/badge.svg)](https://github.com/themusicman/flamel/actions/workflows/elixir.yml)
+
 This package is a bag of helper functions. Some might be questionable but they are what they are so use them as you will.
 
 ## Installation
