@@ -45,6 +45,8 @@ defmodule Flamel.Map do
 
 
   """
+  def atomize_keys(value) when is_struct(value), do: value
+
   def atomize_keys(value) when is_map(value) do
     value
     |> Map.new(fn

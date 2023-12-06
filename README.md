@@ -53,6 +53,17 @@ Flamel.Moment.to_date("2000-10-31") == ~D[2000-10-31]
 Flamel.Moment.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.000Z"
 
 Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
+
+Flamel.Map.indifferent_get(%{test: "value"}, "test") == "value"
+
+Flamel.Map.indifferent_get(%{test: "value"}, :test) == "value"
+
+Flamel.Map.atomize_keys(%{"first_name" => "Thomas", "dob" => "07/01/1981"}) == %{first_name: "Thomas", dob: "07/01/1981"}
+
+Flamel.Map.safely_get(%Person{name: "Todd"}, &String.upcase(&1.name)) == "TODD"
+
+Flamel.Map.safely_get(%{name: "Todd"}, &String.upcase(&1.bad_field), "N/A") == "N/A"
+
 ```
 
 
