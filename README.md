@@ -1,6 +1,6 @@
 # Flamel
 
-**TODO: Add description**
+This package is a bag of helper functions. Some might be questionable but they are what they are so use them as you will.
 
 ## Installation
 
@@ -14,6 +14,37 @@ def deps do
   ]
 end
 ```
+
+## Examples
+
+```elixir
+Flamel.try_and_return(fn -> :ok end) == :ok
+
+Flamel.try_and_return(fn -> raise "error" end, {:ok, :default_value}) == {:ok, :default_value}
+
+Flamel.unwrap_ok!({:ok, []}) == []
+
+Flamel.blank?(%{}) == true
+
+Flamel.present?(%{}) == false
+
+Flamel.to_boolean("Y") == true
+
+Flamel.to_datetime("2000-10-31T01:30:00.000-05:00") == ~U[2000-10-31 06:30:00.000Z]
+
+Flamel.to_datetime(~N[2019-10-31 23:00:07]) == ~N[2019-10-31 23:00:07]
+
+Flamel.to_date(~D[2000-10-31]) == ~D[2000-10-31]
+
+Flamel.to_date(%{"day" => "01", "month" => "12", "year" => "2004"}) == ~D[2004-12-01]
+
+Flamel.to_date("2000-10-31") == ~D[2000-10-31]
+
+Flamel.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.000Z"
+
+Flamel.to_iso8601(~D[2019-10-31]) == "2019-10-31"
+```
+
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can

@@ -120,39 +120,79 @@ defmodule Flamel do
   def unwrap({:error, value}), do: value
 
   @doc """
-  Checks if something is empty?
+  Checks if something is blank?
 
   ## Examples
 
-      iex> Flamel.empty?(nil)
+      iex> Flamel.blank?(nil)
       true
 
-      iex> Flamel.empty?("hello world")
+      iex> Flamel.blank?("hello world")
       false
 
-      iex> Flamel.empty?(%{})
+      iex> Flamel.blank?(%{})
       true
 
-      iex> Flamel.empty?(%{active: true})
+      iex> Flamel.blank?(%{active: true})
       false
 
-      iex> Flamel.empty?([])
+      iex> Flamel.blank?([])
       true
 
-      iex> Flamel.empty?(["one"])
+      iex> Flamel.blank?(["one"])
       false
 
-      iex> Flamel.empty?("   \t   ")
+      iex> Flamel.blank?("   \t   ")
+      true
+
+      iex> Flamel.blank?(0)
+      false
+
+      iex> Flamel.blank?(1)
+      false
+  """
+  def blank?(nil), do: true
+  def blank?(str) when is_binary(str), do: String.trim(str) == ""
+  def blank?([]), do: true
+  def blank?(map) when map == %{}, do: true
+  def blank?(integer) when is_integer(integer), do: false
+  def blank?(float) when is_float(float), do: false
+  def blank?(%DateTime{}), do: false
+  def blank?(_), do: false
+
+  @doc """
+  Checks if something is present?
+
+  ## Examples
+
+      iex> Flamel.present?(nil)
+      false
+
+      iex> Flamel.present?("hello world")
+      true
+
+      iex> Flamel.present?(%{})
+      false
+
+      iex> Flamel.present?(%{active: true})
+      true
+
+      iex> Flamel.present?([])
+      false
+
+      iex> Flamel.present?(["one"])
+      true
+
+      iex> Flamel.present?("   \t   ")
+      false
+
+      iex> Flamel.present?(0)
+      true
+
+      iex> Flamel.present?(1)
       true
   """
-  def empty?(nil), do: true
-  def empty?(0), do: true
-  def empty?(integer) when is_integer(integer), do: false
-  def empty?(str) when is_binary(str), do: String.trim(str) == ""
-  def empty?([]), do: true
-  def empty?(map) when map == %{}, do: true
-  def empty?(%DateTime{}), do: false
-  def empty?(_), do: false
+  def present?(value), do: !blank?(value)
 
   @doc """
   Is something a boolean?
