@@ -4,6 +4,32 @@ defmodule Flamel do
   """
 
   @doc """
+  Turn an exception into an error tuple. This can be used with `with` to
+  catch exceptions and turn them into error tuples.
+
+
+  ## Examples
+
+      iex> Flamel.try_and_return(fn -> :ok end)
+      :ok
+
+      iex> Flamel.try_and_return(fn -> raise "error" end, {:ok, :default_value})
+      {:ok, :default_value}
+
+      iex> Flamel.try_and_return(fn -> raise "error" end)
+      {:error, "error"}
+  """
+  @spec try_and_return(fun(), any()) :: any() | {:error, binary()}
+  def try_and_return(callable, ret \\ nil) do
+    try do
+      callable.()
+    rescue
+      e ->
+        if ret, do: ret, else: {:error, e.message}
+    end
+  end
+
+  @doc """
   Takes an {:ok, value} tuple and returns the value
 
   ## Examples
