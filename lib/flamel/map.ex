@@ -21,6 +21,8 @@ defmodule Flamel.Map do
 
 
   """
+  def stringify_keys(value) when is_struct(value), do: value
+
   def stringify_keys(value) when is_map(value) do
     value
     |> Map.new(fn
