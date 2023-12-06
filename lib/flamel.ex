@@ -455,6 +455,55 @@ defmodule Flamel do
   end
 
   @doc """
+  Converts to a Date
+
+  ## Examples
+
+      iex> Flamel.to_date(~D[2000-10-31])
+      ~D[2000-10-31]
+
+      iex> Flamel.to_date(%{"day" => "01", "month" => "12", "year" => "2004"})
+      ~D[2004-12-01]
+
+      iex> Flamel.to_date("2000-10-31")
+      ~D[2000-10-31]
+
+      iex> Flamel.to_date("2000-31-12")
+      nil
+
+      iex> Flamel.to_date(nil)
+      nil
+  """
+  def to_date(%{"day" => day, "month" => month, "year" => year}) do
+    case Date.new(
+           Flamel.to_integer(year),
+           Flamel.to_integer(month),
+           Flamel.to_integer(day)
+         ) do
+      {:ok, date} -> date
+      _ -> nil
+    end
+  end
+
+  def to_date(%Date{} = value) do
+    value
+  end
+
+  def to_date(value) when is_binary(value) do
+    case Date.from_iso8601(value) do
+      {:ok, date} ->
+        date
+
+      {:error, _} ->
+        nil
+    end
+  end
+
+  def to_date(_) do
+    nil
+  end
+
+  @doc """
   Converts to a DateTime
 
   ## Examples
