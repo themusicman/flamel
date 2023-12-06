@@ -4,13 +4,21 @@ This package is a bag of helper functions. Some might be questionable but they a
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+If [available in Hex](https://hex.pm/packages/flamel), the package can be installed
 by adding `flamel` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
     {:flamel, "~> 0.1.0"}
+  ]
+end
+```
+or mainline the latest:
+```elixir
+def deps do
+  [
+    {:flamel, github: "themusicman/flamel", branch: "main"}
   ]
 end
 ```
@@ -30,19 +38,19 @@ Flamel.present?(%{}) == false
 
 Flamel.to_boolean("Y") == true
 
-Flamel.to_datetime("2000-10-31T01:30:00.000-05:00") == ~U[2000-10-31 06:30:00.000Z]
+Flamel.Moment.to_datetime("2000-10-31T01:30:00.000-05:00") == ~U[2000-10-31 06:30:00.000Z]
 
-Flamel.to_datetime(~N[2019-10-31 23:00:07]) == ~N[2019-10-31 23:00:07]
+Flamel.Moment.to_datetime(~N[2019-10-31 23:00:07]) == ~N[2019-10-31 23:00:07]
 
-Flamel.to_date(~D[2000-10-31]) == ~D[2000-10-31]
+Flamel.Moment.to_date(~D[2000-10-31]) == ~D[2000-10-31]
 
-Flamel.to_date(%{"day" => "01", "month" => "12", "year" => "2004"}) == ~D[2004-12-01]
+Flamel.Moment.to_date(%{"day" => "01", "month" => "12", "year" => "2004"}) == ~D[2004-12-01]
 
-Flamel.to_date("2000-10-31") == ~D[2000-10-31]
+Flamel.Moment.to_date("2000-10-31") == ~D[2000-10-31]
 
-Flamel.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.000Z"
+Flamel.Moment.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.000Z"
 
-Flamel.to_iso8601(~D[2019-10-31]) == "2019-10-31"
+Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
 ```
 
 
