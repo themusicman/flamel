@@ -13,10 +13,11 @@ defmodule Flamel.Context do
   """
   @type t :: %__MODULE__{
           halt: boolean(),
-          assigns: map()
+          assigns: map(),
+          reason: binary()
         }
 
-  defstruct halt: false, assigns: %{}
+  defstruct halt: false, assigns: %{}, reason: nil
 
   @doc """
   Assigns a value to a key in the context.
@@ -35,10 +36,8 @@ defmodule Flamel.Context do
 
   """
   @spec assign(%Context{}, binary() | atom(), term()) :: %Context{}
-  def assign(%Context{} = context, key, value) do
-    assigns = context.assigns
-    assigns = Map.put(assigns, key, value)
-    %{context | assigns: assigns}
+  def assign(%Context{} = context, key, value) when is_atom(key) do
+    %{context | assigns: Map.put(context.assigns, key, value)}
   end
 
   @doc """
@@ -53,10 +52,20 @@ defmodule Flamel.Context do
       iex> context.halt
       true
 
+      iex> context = %Flamel.Context{}
+      iex> context.halt
+      false
+      iex> context = Flamel.Context.halt!(context, "some error message")
+      iex> context.halt
+      true
+      iex> context.reason
+      "some error message"
+
+
 
   """
-  def halt!(%Context{} = context) do
-    %{context | halt: true}
+  def halt!(%Context{} = context, reason \\ nil) do
+    %{context | halt: true, reason: reason}
   end
 
   @doc """
