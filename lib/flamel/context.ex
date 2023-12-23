@@ -20,6 +20,14 @@ defmodule Flamel.Context do
   defstruct halt: false, assigns: %{}, reason: nil
 
   @doc """
+  Build a new Context
+  """
+  @spec new(map()) :: %Context{}
+  def new(assigns \\ %{}) do
+    %Context{assigns: assigns}
+  end
+
+  @doc """
   Assigns a value to a key in the context.
 
   The assigns is meant to be used to store values in the context so that other functions in your pipeline can access them. The assigns storage is a map.
