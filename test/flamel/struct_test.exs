@@ -1,4 +1,4 @@
-defmodule Flamel.MapTest do
+defmodule Flamel.StructTest do
   use ExUnit.Case
 
   defmodule Person do
