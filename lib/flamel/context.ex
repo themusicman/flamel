@@ -7,39 +7,41 @@ defmodule Flamel.Context do
 
   ## Example
 
-    alias Flamel.Context
+  ```
+  alias Flamel.Context
 
-    context =
-      Context.new()
-      |> assign_user(user)
-      |> authorize()
-      |> perform_action()
+  context =
+    Context.new()
+    |> assign_user(user)
+    |> authorize()
+    |> perform_action()
 
-    if context.assigns[:action_performed?] do
-      # something you are allowed to do
-    end
+  if context.assigns[:action_performed?] do
+    # something you are allowed to do
+  end
 
-    def assign_user?(%Context{} = context, user) do
-      Context.assign(context, :user, user)
-    end
+  def assign_user?(%Context{} = context, user) do
+    Context.assign(context, :user, user)
+  end
 
-    def authorize(%Context{assigns: %{user: %{type: :admin}} = context) do
-      context
-    end
+  def authorize(%Context{assigns: %{user: %{type: :admin}} = context) do
+    context
+  end
 
-    def authorize(%Context{} = context) do
-      Context.halt!(context, "Not permitted")
-    end
+  def authorize(%Context{} = context) do
+    Context.halt!(context, "Not permitted")
+  end
 
-    def perform_action(%Context{halt: true}) do
-      # do nothing
-      context
-    end
+  def perform_action(%Context{halt: true}) do
+    # do nothing
+    context
+  end
 
-    def perform_action(%Context{assigns: %{user: user}} = context) do
-      # Do something
-      Context.assign(context, %{action_performed_by: user, action_performed?: true})
-    end
+  def perform_action(%Context{assigns: %{user: user}} = context) do
+    # Do something
+    Context.assign(context, %{action_performed_by: user, action_performed?: true})
+  end
+  ```
 
   """
 
