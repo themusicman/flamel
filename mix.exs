@@ -2,7 +2,7 @@ defmodule Flamel.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/themusicman/flamel"
-  @version "0.1.0"
+  @version "1.0.0"
 
   def project do
     [
