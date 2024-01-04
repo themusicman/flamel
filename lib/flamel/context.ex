@@ -92,7 +92,7 @@ defmodule Flamel.Context do
   end
 
   @doc """
-  Merges a values in a map into the assigns in the context. It does not
+  Merges values in a map into the assigns in the context. It does not
   perform a deep merge.
 
   ## Examples
