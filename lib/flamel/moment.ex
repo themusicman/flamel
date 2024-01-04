@@ -1,80 +1,107 @@
-defmodule Flamel.Moment do
-  @doc """
-  Converts to a DateTime
+defprotocol Flamel.Moment do
+  @fallback_to_any true
+  @moduledoc ~S"""
+  The `Flamel.Moment` protocol is responsible for
+  converting a structure to a DateTime, Date, or ISO8601 string (only if applicable).
 
-  ## Examples
-
-      iex> Flamel.Moment.to_datetime("2000-10-31T01:30:00.000-05:00")
-      ~U[2000-10-31 06:30:00.000Z]
-
-      iex> Flamel.Moment.to_datetime(~N[2019-10-31 23:00:07])
-      ~N[2019-10-31 23:00:07]
-
-      iex> {:ok, datetime} = DateTime.new(~D[2016-05-24], ~T[13:26:08.003], "Etc/UTC")
-      iex> Flamel.Moment.to_datetime(datetime)
-      ~U[2016-05-24 13:26:08.003Z]      
-
-      iex> Flamel.Moment.to_datetime(nil)
-      nil
-
-      iex> Flamel.Moment.to_datetime("badstring")
-      nil
   """
-  def to_datetime(datetime) when is_binary(datetime) do
-    case DateTime.from_iso8601(datetime) do
-      {:ok, start, _} ->
-        start
+
+  @doc """
+  Converts `term` to a DateTime.
+  """
+  @spec to_datetime(t) :: DateTime.t() | nil
+  def to_datetime(value)
+
+  @doc """
+  Converts `term` to a Date 
+  """
+  @spec to_date(t) :: Date.t() | nil
+  def to_date(value)
+
+  @doc """
+  Converts `term` to an ISO8601 string.
+  """
+  @spec to_iso8601(t) :: String.t() | nil
+  def to_iso8601(value)
+end
+
+defimpl Flamel.Moment, for: Any do
+  def to_datetime(_) do
+    nil
+  end
+
+  def to_date(_) do
+    nil
+  end
+
+  def to_iso8601(_) do
+    nil
+  end
+end
+
+defimpl Flamel.Moment, for: DateTime do
+  def to_datetime(value) do
+    value
+  end
+
+  def to_date(value) do
+    DateTime.to_date(value)
+  end
+
+  def to_iso8601(value) do
+    DateTime.to_iso8601(value)
+  end
+end
+
+defimpl Flamel.Moment, for: NaiveDateTime do
+  def to_datetime(value) do
+    value
+  end
+
+  def to_date(value) do
+    NaiveDateTime.to_date(value)
+  end
+
+  def to_iso8601(value) do
+    NaiveDateTime.to_iso8601(value)
+  end
+end
+
+defimpl Flamel.Moment, for: Date do
+  def to_datetime(value) do
+    (Date.to_iso8601(value) <> "T00:00:00Z")
+    |> DateTime.from_iso8601()
+    |> case do
+      {:ok, datetime, _} -> datetime
+      _ -> nil
+    end
+  end
+
+  def to_date(value) do
+    value
+  end
+
+  def to_iso8601(value) do
+    Date.to_iso8601(value)
+  end
+end
+
+defimpl Flamel.Moment, for: BitString do
+  def to_datetime(value) when is_binary(value) do
+    case DateTime.from_iso8601(value) do
+      {:ok, datetime, _} ->
+        datetime
 
       _ ->
         nil
     end
   end
 
-  def to_datetime(%DateTime{} = datetime) do
-    datetime
-  end
-
-  def to_datetime(%NaiveDateTime{} = datetime) do
-    datetime
-  end
-
-  def to_datetime(_) do
-    nil
-  end
-
-  @doc """
-  Converts to a Date
-
-  ## Examples
-
-      iex> Flamel.Moment.to_date(~D[2000-10-31])
-      ~D[2000-10-31]
-
-      iex> Flamel.Moment.to_date(%{"day" => "01", "month" => "12", "year" => "2004"})
-      ~D[2004-12-01]
-
-      iex> Flamel.Moment.to_date("2000-10-31")
-      ~D[2000-10-31]
-
-      iex> Flamel.Moment.to_date("2000-31-12")
-      nil
-
-      iex> Flamel.Moment.to_date(nil)
-      nil
-  """
-  def to_date(%{"day" => day, "month" => month, "year" => year}) do
-    case Date.new(
-           Flamel.to_integer(year),
-           Flamel.to_integer(month),
-           Flamel.to_integer(day)
-         ) do
-      {:ok, date} -> date
-      _ -> nil
-    end
-  end
-
-  def to_date(%Date{} = value) do
-    value
+  def to_datetime(value) do
+    raise Protocol.UndefinedError,
+      protocol: @protocol,
+      value: value,
+      description: "cannot convert a bitstring to a string"
   end
 
   def to_date(value) when is_binary(value) do
@@ -82,43 +109,32 @@ defmodule Flamel.Moment do
       {:ok, date} ->
         date
 
-      {:error, _} ->
+      _ ->
         nil
     end
   end
 
-  def to_date(_) do
-    nil
+  def to_date(value) do
+    raise Protocol.UndefinedError,
+      protocol: @protocol,
+      value: value,
+      description: "cannot convert a bitstring to a string"
   end
 
-  @doc """
-  Converts to a DateTime
+  def to_iso8601(value) when is_binary(value) do
+    case Flamel.Moment.to_datetime(value) do
+      nil ->
+        nil
 
-  ## Examples
-
-      iex> Flamel.Moment.to_iso8601(~U[2000-10-31 06:30:00.000Z])
-      "2000-10-31T06:30:00.000Z"
-
-      iex> Flamel.Moment.to_iso8601(~N[2019-10-31 23:00:07])
-      "2019-10-31T23:00:07"
-
-      iex> Flamel.Moment.to_iso8601(~D[2019-10-31])
-      "2019-10-31"
-      
-  """
-  def to_iso8601(%DateTime{} = datetime) do
-    DateTime.to_iso8601(datetime)
+      _ ->
+        value
+    end
   end
 
-  def to_iso8601(%NaiveDateTime{} = datetime) do
-    NaiveDateTime.to_iso8601(datetime)
-  end
-
-  def to_iso8601(%Date{} = date) do
-    Date.to_iso8601(date)
-  end
-
-  def to_iso8601(_) do
-    ""
+  def to_iso8601(value) do
+    raise Protocol.UndefinedError,
+      protocol: @protocol,
+      value: value,
+      description: "cannot convert a bitstring to a string"
   end
 end
