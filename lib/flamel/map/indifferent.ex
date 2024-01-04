@@ -2,7 +2,7 @@ defmodule Flamel.Map.Indifferent do
   @doc """
   Get a value from a map whether the key is a string or atom
 
-  Examples
+  ## Examples
 
     iex> Flamel.Map.Indifferent.get(%{test: "value"}, "test")
     "value"
