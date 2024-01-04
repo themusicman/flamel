@@ -151,14 +151,9 @@ defmodule Flamel do
       iex> Flamel.blank?(1)
       false
   """
-  def blank?(nil), do: true
-  def blank?(str) when is_binary(str), do: String.trim(str) == ""
-  def blank?([]), do: true
-  def blank?(map) when map == %{}, do: true
-  def blank?(integer) when is_integer(integer), do: false
-  def blank?(float) when is_float(float), do: false
-  def blank?(%DateTime{}), do: false
-  def blank?(_), do: false
+  def blank?(value) do
+    Flamel.Blank.blank?(value)
+  end
 
   @doc """
   Checks if something is present?
@@ -192,7 +187,7 @@ defmodule Flamel do
       iex> Flamel.present?(1)
       true
   """
-  def present?(value), do: !blank?(value)
+  def present?(value), do: !Flamel.Blank.blank?(value)
 
   @doc """
   Is something a boolean?
@@ -270,27 +265,9 @@ defmodule Flamel do
       iex> Flamel.to_boolean(false)
       false
   """
-  def to_boolean("Y"), do: true
-  def to_boolean("y"), do: true
-  def to_boolean("YES"), do: true
-  def to_boolean("Yes"), do: true
-  def to_boolean("yes"), do: true
-  def to_boolean("true"), do: true
-  def to_boolean("TRUE"), do: true
-  def to_boolean("1"), do: true
-  def to_boolean(1), do: true
-  def to_boolean(true), do: true
-  def to_boolean("N"), do: false
-  def to_boolean("n"), do: false
-  def to_boolean("NO"), do: false
-  def to_boolean("No"), do: false
-  def to_boolean("no"), do: false
-  def to_boolean("false"), do: false
-  def to_boolean("0"), do: false
-  def to_boolean(0), do: false
-  def to_boolean(false), do: false
-  def to_boolean(nil), do: false
-  def to_boolean(_), do: false
+  def to_boolean(value) do
+    Flamel.Boolean.to(value)
+  end
 
   @doc """
   Converts to a string
@@ -316,28 +293,8 @@ defmodule Flamel do
       "1"
 
   """
-  def to_string(value) when is_binary(value) do
-    value
-  end
-
-  def to_string(value) when is_integer(value) do
-    Integer.to_string(value)
-  end
-
-  def to_string(value) when is_float(value) do
-    Float.to_string(value)
-  end
-
-  def to_string(value) when is_nil(value) do
-    ""
-  end
-
-  def to_string(value) when is_atom(value) do
-    Atom.to_string(value)
-  end
-
-  def to_string(_) do
-    ""
+  def to_string(value) do
+    Flamel.String.to(value)
   end
 
   @doc """
@@ -358,24 +315,8 @@ defmodule Flamel do
       :"1.1"
   """
 
-  def to_atom(value) when is_binary(value) do
-    String.to_atom(value)
-  end
-
-  def to_atom(value) when is_atom(value) do
-    value
-  end
-
-  def to_atom(value) when is_float(value) do
-    value |> Flamel.to_string() |> to_atom()
-  end
-
-  def to_atom(value) when is_integer(value) do
-    value |> Flamel.to_string() |> to_atom()
-  end
-
-  def to_atom(_) do
-    nil
+  def to_atom(value) do
+    Flamel.Atom.to(value)
   end
 
   @doc """
@@ -396,10 +337,9 @@ defmodule Flamel do
       0
 
   """
-  def to_integer(value) when is_binary(value), do: String.to_integer(value)
-  def to_integer(value) when is_integer(value), do: value
-  def to_integer(value) when is_float(value), do: trunc(value)
-  def to_integer(value) when is_nil(value), do: 0
+  def to_integer(value) do
+    Flamel.Integer.to(value)
+  end
 
   @doc """
   Converts to a float
@@ -418,40 +358,14 @@ defmodule Flamel do
       iex> Flamel.to_float(nil)
       0.0
   """
-  def to_float(value) when is_binary(value) do
-    value
-    |> Float.parse()
-    |> case do
-      {value, _} ->
-        value
-
-      _ ->
-        0.0
-    end
-  end
-
-  def to_float(value) when is_float(value) do
-    value
-  end
-
-  def to_float(value) when is_integer(value) do
-    value
-    |> Integer.to_string()
-    |> to_float()
-  end
-
-  def to_float(value) when is_nil(value) do
-    0.0
+  def to_float(value) do
+    Flamel.Float.to(value)
   end
 
   @doc """
   Converts to a map
   """
-  def to_map(value) when is_struct(value) do
-    Map.from_struct(value)
-  end
-
-  def to_map(value) when is_map(value) do
-    value
+  def to_map(value) do
+    Flamel.Mappable.to(value)
   end
 end
