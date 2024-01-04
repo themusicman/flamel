@@ -4,20 +4,20 @@ defmodule Flamel.Map.Indifferent do
 
   ## Examples
 
-    iex> Flamel.Map.Indifferent.get(%{test: "value"}, "test")
-    "value"
+      iex> Flamel.Map.Indifferent.get(%{test: "value"}, "test")
+      "value"
 
-    iex> Flamel.Map.Indifferent.get(%{test: "value"}, :test)
-    "value"
+      iex> Flamel.Map.Indifferent.get(%{test: "value"}, :test)
+      "value"
 
-    iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, :test)
-    "value"
+      iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, :test)
+      "value"
 
-    iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, "test")
-    "value"
+      iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, "test")
+      "value"
 
-    iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, "does-not-exist", "default")
-    "default"
+      iex> Flamel.Map.Indifferent.get(%{"test" => "value"}, "does-not-exist", "default")
+      "default"
   """
   def get(map, key, default \\ nil)
 
