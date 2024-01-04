@@ -31,7 +31,7 @@ end
 
 Here is a trivial example: 
 
-```
+```elixir
 alias Flamel.Context
 
 context =
@@ -83,7 +83,7 @@ Flamel.unwrap_ok_or_nil({:error, "boom!"}) == nil
 
 ### Predicates
 
-```
+```elixir
 Flamel.blank?(%{}) == true
 
 # present is the opposite of blank?
@@ -92,7 +92,7 @@ Flamel.present?(%{}) == false
 
 ### Conversions
 
-```
+```elixir
 Flamel.to_boolean("Y") == true
 
 Flamel.to_integer(nil) == ""
@@ -108,7 +108,7 @@ Flamel.to_string(nil) == ""
 
 ### DateTime
 
-```
+```elixir
 Flamel.Moment.to_datetime("2000-10-31T01:30:00.000-05:00") == ~U[2000-10-31 06:30:00.000Z]
 
 Flamel.Moment.to_datetime(~N[2019-10-31 23:00:07]) == ~N[2019-10-31 23:00:07]
@@ -124,7 +124,7 @@ Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
 
 ### Maps/Structs
 
-```
+```elixir
 Flamel.Map.atomize_keys(%{"first_name" => "Thomas", "dob" => "07/01/1981"}) == %{first_name: "Thomas", dob: "07/01/1981"}
 
 Flamel.Map.Indifferent.get(%{test: "value"}, "test") == "value"
