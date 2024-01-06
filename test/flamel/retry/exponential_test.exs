@@ -4,7 +4,7 @@ defmodule Flamel.Retry.ExponentialTest do
 
   describe "calc/1 with Flamel.Retry.Exponential" do
     test "returns an exponential interval" do
-      backoff = Flamel.Retry.factory(:exponential)
+      backoff = Flamel.Retry.exponential()
 
       assert backoff.attempt == 1
       assert backoff.interval == 0
@@ -38,7 +38,7 @@ defmodule Flamel.Retry.ExponentialTest do
     end
 
     test "returns an exponential interval for infinity but obeys the max_interval" do
-      backoff = Flamel.Retry.factory(:exponential, max_attempts: :infinity)
+      backoff = Flamel.Retry.exponential(max_attempts: :infinity)
 
       assert backoff.attempt == 1
       assert backoff.interval == 0
@@ -77,7 +77,7 @@ defmodule Flamel.Retry.ExponentialTest do
     end
 
     test "returns an exponential interval with jitter" do
-      backoff = Flamel.Retry.factory(:exponential, with_jitter?: true)
+      backoff = Flamel.Retry.exponential(with_jitter?: true)
 
       assert backoff.attempt == 1
       assert backoff.interval == 0

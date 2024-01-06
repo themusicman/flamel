@@ -21,8 +21,12 @@ defmodule Flamel.Retry do
     Flamel.Retry.Strategy.calc(strategy)
   end
 
-  def factory(:exponential, args \\ []) do
+  def exponential(args \\ []) do
     struct!(Flamel.Retry.Exponential, args)
+  end
+
+  def http(args \\ []) do
+    struct!(Flamel.Retry.Http, args)
   end
 
   @spec try(term(), function()) :: term()
@@ -35,14 +39,23 @@ defmodule Flamel.Retry do
   end
 
   defp execute({operation, backoff}, func) when operation in [:try, :retry] do
-    task = Flamel.Task.delay(backoff.interval, Flamel.try_and_return(func))
+    # turtles all the way down
+    task =
+      Flamel.Task.delay(
+        backoff.interval,
+        fn ->
+          Flamel.try_and_return(fn ->
+            func.(backoff)
+          end)
+        end
+      )
 
     case Task.await(task) do
       {:ok, result} ->
         {:ok, result, backoff}
 
       error ->
-        Logger.error("#{__MODULE__}.execute error=#{inspect(error)}"
+        Logger.error("#{__MODULE__}.execute error=#{inspect(error)}")
         execute(Flamel.Retry.calc(backoff), func)
     end
   end
