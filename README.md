@@ -70,7 +70,7 @@ end
 
 You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocols. You can implement the `Flamel.Contextable` protocol for your own data type. Look at the interals of `Flamel.Retryable.Exponential` and `Flamel.Retryable.Linear` for an example. 
 
-### Retryable
+### Retryable (experimental)
 
 Retryable functions that retry based on different strategies. Right now Linear and Exponential at the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`). 
 
@@ -101,6 +101,23 @@ end)
 
 There is a `Flamel.Retryable.Http` strategy but it currently just implements the Exponential strategy. The intent is to 
 change the retry interval based on the HTTP status but this is not implemented yet. PRs are welcome. ;)
+
+### Delayed Task (experimental)
+
+Executes an `Task.async` with a delay.
+
+```elixir
+task =
+  Flamel.Task.delay(
+    interval_in_milliseconds,
+    fn ->
+      do_something()
+    end
+  )
+
+result = Task.await(task)
+```
+
 
 ### Utility 
 
