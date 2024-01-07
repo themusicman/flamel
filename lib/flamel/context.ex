@@ -59,20 +59,6 @@ defmodule Flamel.Context do
   defstruct halt: false, assigns: %{}, reason: nil
 
   @doc """
-  Build a new Context
-  """
-  @spec new(map()) :: %Context{}
-  def new(assigns \\ %{})
-
-  def new(assigns) when is_map(assigns) do
-    %Context{assigns: assigns}
-  end
-
-  def new(_) do
-    raise ArgumentError, "Must pass a map to Flamel.Context.new/1"
-  end
-
-  @doc """
   Assigns a value to a key in the context.
 
   The assigns is meant to be used to store values in the context so that other functions in your pipeline can access them. The assigns storage is a map.
@@ -88,9 +74,9 @@ defmodule Flamel.Context do
 
 
   """
-  @spec assign(%Context{}, binary() | atom(), term()) :: %Context{}
-  def assign(%Context{} = context, key, value) when is_atom(key) do
-    %{context | assigns: Map.put(context.assigns, key, value)}
+  @spec assign(term(), binary() | atom(), term()) :: term
+  def assign(context, key, value) when is_atom(key) do
+    Flamel.Contextable.assign(context, key, value)
   end
 
   @doc """
@@ -99,15 +85,15 @@ defmodule Flamel.Context do
 
   ## Examples
 
-      iex> context = Flamel.Context.assign(Flamel.Context.new(), %{hello: :world})
+      iex> context = Flamel.Context.assign(%Flamel.Context{}, %{hello: :world})
       iex> context.assigns[:hello]
       :world
 
 
   """
-  @spec assign(%Context{}, map()) :: %Context{}
-  def assign(%Context{} = context, map) when is_map(map) do
-    %{context | assigns: Map.merge(context.assigns, map)}
+  @spec assign(term(), map()) :: term()
+  def assign(context, map) when is_map(map) do
+    Flamel.Contextable.assign(context, map)
   end
 
   @doc """
@@ -118,7 +104,7 @@ defmodule Flamel.Context do
       iex> context = %Flamel.Context{}
       iex> context.halt
       false
-      iex> context = Flamel.Context.halt!(context)
+      iex> context = Flamel.Context.halt!(context, "no more")
       iex> context.halt
       true
 
@@ -134,8 +120,9 @@ defmodule Flamel.Context do
 
 
   """
-  def halt!(%Context{} = context, reason \\ nil) do
-    %{context | halt: true, reason: reason}
+  @spec halt!(term(), binary()) :: term()
+  def halt!(context, reason) do
+    Flamel.Contextable.halt!(context, reason)
   end
 
   @doc """
@@ -143,13 +130,13 @@ defmodule Flamel.Context do
 
   ## Examples
 
-      iex> context = Flamel.Context.halt!(%Flamel.Context{})
+      iex> context = Flamel.Context.halt!(%Flamel.Context{}, "stop it")
       iex> Flamel.Context.halted?(context)
       true
 
   """
-  def halted?(%Context{halt: true}), do: true
-  def halted?(_), do: false
+  @spec halted?(term()) :: boolean()
+  def halted?(context), do: Flamel.Contextable.halted?(context)
 
   @doc """
   Signals to further functions in the pipeline that processing should resume
@@ -165,6 +152,30 @@ defmodule Flamel.Context do
 
 
   """
+  @spec resume!(term()) :: term()
+  def resume!(context) do
+    Flamel.Contextable.resume!(context)
+  end
+end
+
+defimpl Flamel.Contextable, for: Flamel.Context do
+  alias Flamel.Context
+
+  def assign(%Context{} = context, key, value) when is_atom(key) do
+    %{context | assigns: Map.put(context.assigns, key, value)}
+  end
+
+  def assign(%Context{} = context, map) when is_map(map) do
+    %{context | assigns: Map.merge(context.assigns, map)}
+  end
+
+  def halt!(%Context{} = context, reason) do
+    %{context | halt: true, reason: reason}
+  end
+
+  def halted?(%Context{halt: true}), do: true
+  def halted?(_), do: false
+
   def resume!(%Context{} = context) do
     %{context | halt: false}
   end
