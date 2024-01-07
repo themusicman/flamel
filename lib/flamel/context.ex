@@ -32,7 +32,7 @@ defmodule Flamel.Context do
     Context.halt!(context, "Not permitted")
   end
 
-  def perform_action(%Context{halt: true}) do
+  def perform_action(%Context{halt?: true}) do
     # do nothing
     context
   end
@@ -51,12 +51,12 @@ defmodule Flamel.Context do
   Flamel.Context
   """
   @type t :: %__MODULE__{
-          halt: boolean(),
+          halt?: boolean(),
           assigns: map(),
           reason: binary()
         }
 
-  defstruct halt: false, assigns: %{}, reason: nil
+  defstruct halt?: false, assigns: %{}, reason: nil
 
   @doc """
   Assigns a value to a key in the context.
@@ -80,8 +80,10 @@ defmodule Flamel.Context do
   end
 
   @doc """
-  Merges values in a map into the assigns in the context. It does not
+  If given a map it will merge values into the assigns in the context. It does not
   perform a deep merge.
+
+  If given a keyword list it will set values in the assigns. You can also push a value into the key if the value is a list.
 
   ## Examples
 
@@ -90,10 +92,21 @@ defmodule Flamel.Context do
       :world
 
 
+      iex> context = Flamel.Context.assign(%Flamel.Context{assigns: %{tags: []}}, set: [hello: :world], push: [tags: "new"])
+      iex> context.assigns[:hello]
+      :world
+      iex> context.assigns[:tags]
+      ["new"]
+
   """
   @spec assign(term(), map()) :: term()
   def assign(context, map) when is_map(map) do
     Flamel.Contextable.assign(context, map)
+  end
+
+  @spec assign(term(), keyword()) :: term()
+  def assign(context, args) when is_list(args) do
+    Flamel.Contextable.assign(context, args)
   end
 
   @doc """
@@ -102,17 +115,17 @@ defmodule Flamel.Context do
   ## Examples
 
       iex> context = %Flamel.Context{}
-      iex> context.halt
+      iex> context.halt?
       false
       iex> context = Flamel.Context.halt!(context, "no more")
-      iex> context.halt
+      iex> context.halt?
       true
 
       iex> context = %Flamel.Context{}
-      iex> context.halt
+      iex> context.halt?
       false
       iex> context = Flamel.Context.halt!(context, "some error message")
-      iex> context.halt
+      iex> context.halt?
       true
       iex> context.reason
       "some error message"
@@ -143,11 +156,11 @@ defmodule Flamel.Context do
 
   ## Examples
 
-      iex> context = %Flamel.Context{halt: true}
-      iex> context.halt
+      iex> context = %Flamel.Context{halt?: true}
+      iex> context.halt?
       true
       iex> context = Flamel.Context.resume!(context)
-      iex> context.halt
+      iex> context.halt?
       false
 
 
@@ -160,23 +173,28 @@ end
 
 defimpl Flamel.Contextable, for: Flamel.Context do
   alias Flamel.Context
+  alias Flamel.Map
 
   def assign(%Context{} = context, key, value) when is_atom(key) do
-    %{context | assigns: Map.put(context.assigns, key, value)}
+    Map.assign(context, :assigns, set: [{key, value}])
   end
 
   def assign(%Context{} = context, map) when is_map(map) do
-    %{context | assigns: Map.merge(context.assigns, map)}
+    Map.assign(context, :assigns, map)
+  end
+
+  def assign(%Context{} = context, args) when is_list(args) do
+    Map.assign(context, :assigns, args)
   end
 
   def halt!(%Context{} = context, reason) do
-    %{context | halt: true, reason: reason}
+    Map.assign(context, set: [halt?: true, reason: reason])
   end
 
-  def halted?(%Context{halt: true}), do: true
+  def halted?(%Context{halt?: true}), do: true
   def halted?(_), do: false
 
   def resume!(%Context{} = context) do
-    %{context | halt: false}
+    Map.assign(context, set: [halt?: false, reason: nil])
   end
 end

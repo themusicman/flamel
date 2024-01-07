@@ -11,7 +11,7 @@ defmodule Flamel.Retryable.Exponential do
           base: integer(),
           with_jitter?: boolean(),
           assigns: map(),
-          halt: boolean(),
+          halt?: boolean(),
           reason: binary() | nil
         }
   defstruct attempt: 0,
@@ -22,7 +22,7 @@ defmodule Flamel.Retryable.Exponential do
             max_interval: 8_000,
             with_jitter?: false,
             assigns: %{},
-            halt: false,
+            halt?: false,
             reason: nil
 end
 
@@ -110,23 +110,28 @@ end
 
 defimpl Flamel.Contextable, for: Flamel.Retryable.Exponential do
   alias Flamel.Retryable.Exponential
+  alias Flamel.Map
 
   def assign(%Exponential{} = context, key, value) when is_atom(key) do
-    %{context | assigns: Map.put(context.assigns, key, value)}
+    Map.assign(context, :assigns, set: [{key, value}])
   end
 
   def assign(%Exponential{} = context, map) when is_map(map) do
-    %{context | assigns: Map.merge(context.assigns, map)}
+    Map.assign(context, :assigns, map)
+  end
+
+  def assign(%Exponential{} = context, args) when is_list(args) do
+    Map.assign(context, :assigns, args)
   end
 
   def halt!(%Exponential{} = context, reason) do
-    %{context | halt: true, reason: reason}
+    Map.assign(context, set: [halt?: true, reason: reason])
   end
 
-  def halted?(%Exponential{halt: true}), do: true
+  def halted?(%Exponential{halt?: true}), do: true
   def halted?(_), do: false
 
   def resume!(%Exponential{} = context) do
-    %{context | halt: false}
+    Map.assign(context, set: [halt?: false, reason: nil])
   end
 end

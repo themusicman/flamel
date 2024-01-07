@@ -37,7 +37,7 @@ defmodule Flamel.Retryable.ExponentialTest do
                max_attempts: 5,
                interval: 8_000,
                multiplier: 2,
-               halt: true,
+               halt?: true,
                reason: "max_attempts=5 reached"
              } ==
                Flamel.Retryable.calc(strategy)
@@ -126,22 +126,22 @@ defmodule Flamel.Retryable.ExponentialTest do
       assert strategy.assigns[:hello] == :world
     end
 
-    test "can halt context" do
+    test "can halt? context" do
       import Flamel.Context
 
       strategy = Flamel.Retryable.exponential()
-      assert strategy.halt == false
+      assert strategy.halt? == false
       strategy = halt!(strategy, "reason")
-      assert strategy.halt == true
+      assert strategy.halt? == true
     end
 
     test "can resume context" do
       import Flamel.Context
 
-      strategy = Flamel.Retryable.exponential(halt: true)
-      assert strategy.halt == true
+      strategy = Flamel.Retryable.exponential(halt?: true)
+      assert strategy.halt? == true
       strategy = resume!(strategy)
-      assert strategy.halt == false
+      assert strategy.halt? == false
     end
   end
 end

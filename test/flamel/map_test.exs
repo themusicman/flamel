@@ -23,4 +23,19 @@ defmodule Flamel.MapTest do
       assert Flamel.Map.atomize_keys(data) == %{person: person}
     end
   end
+
+  describe "assign/3 pushing a list of items" do
+    test "push a list of items" do
+      map =
+        Flamel.Map.assign(
+          %{assigns: %{hobbies: ["playing"]}},
+          :assigns,
+          set: [name: "Osa"],
+          push: [hobbies: ["soccer", "coloring"]]
+        )
+
+      assert get_in(map, [:assigns, :hobbies]) == ["soccer", "coloring", "playing"]
+      assert get_in(map, [:assigns, :name]) == "Osa"
+    end
+  end
 end

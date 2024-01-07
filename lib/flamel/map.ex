@@ -56,4 +56,75 @@ defmodule Flamel.Map do
       {k, v} -> {Flamel.to_atom(k), v}
     end)
   end
+
+  @doc """
+  Assign values in a map 
+
+  ## Examples
+
+      iex> map = Flamel.Map.assign(%{tags: []}, push: [tags: "new"])
+      iex> map[:tags] 
+      iex> ["new"]
+
+      iex> map = Flamel.Map.assign(%{}, set: [name: "Clark"])
+      iex> map[:name] 
+      iex> "Clark"
+
+      iex> map = Flamel.Map.assign(%{assigns: %{}}, :assigns, set: [name: "Osa"])
+      iex> get_in(map, [:assigns, :name])
+      iex> "Osa"
+
+      iex> map = Flamel.Map.assign(%{assigns: %{}}, :assigns, %{name: "Clark"})
+      iex> get_in(map, [:assigns, :name])
+      iex> "Clark"
+  """
+
+  @spec assign(map(), atom(), keyword()) :: map()
+  def assign(map, key, values) when is_list(values) do
+    Map.get(map, key, %{})
+    |> then(fn assigns ->
+      assign(assigns, values)
+    end)
+    |> then(fn assigns ->
+      Map.put(map, key, assigns)
+    end)
+  end
+
+  @spec assign(map(), atom(), map()) :: map()
+  def assign(map, key, values) when is_map(values) do
+    Map.get(map, key, %{})
+    |> Map.merge(values)
+    |> then(fn assigns ->
+      Map.put(map, key, assigns)
+    end)
+  end
+
+  @spec assign(map(), keyword()) :: map()
+  def assign(assigns, values) when is_list(values) do
+    set = Keyword.get(values, :set, [])
+    push = Keyword.get(values, :push, [])
+
+    assigns =
+      Enum.reduce(set, assigns, fn {key, value}, acc ->
+        Map.put(acc, key, value)
+      end)
+
+    Enum.reduce(push, assigns, fn {key, value}, acc ->
+      Map.get(acc, key, [])
+      |> then(fn
+        list when is_list(list) ->
+          if is_list(value) do
+            Enum.concat(value, list)
+          else
+            [value | list]
+          end
+
+        list ->
+          list
+      end)
+      |> then(fn value ->
+        Map.put(acc, key, value)
+      end)
+    end)
+  end
 end

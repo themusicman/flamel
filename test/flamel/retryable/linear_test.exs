@@ -31,7 +31,7 @@ defmodule Flamel.Retryable.LinearTest do
                max_attempts: 4,
                interval: 3_000,
                reason: "max_attempts=4 reached",
-               halt: true
+               halt?: true
              } ==
                Flamel.Retryable.calc(strategy)
     end
@@ -109,22 +109,22 @@ defmodule Flamel.Retryable.LinearTest do
       assert strategy.assigns[:hello] == :world
     end
 
-    test "can halt context" do
+    test "can halt? context" do
       import Flamel.Context
 
       strategy = Flamel.Retryable.linear()
-      assert strategy.halt == false
+      assert strategy.halt? == false
       strategy = halt!(strategy, "reason")
-      assert strategy.halt == true
+      assert strategy.halt? == true
     end
 
     test "can resume context" do
       import Flamel.Context
 
-      strategy = Flamel.Retryable.linear(halt: true)
-      assert strategy.halt == true
+      strategy = Flamel.Retryable.linear(halt?: true)
+      assert strategy.halt? == true
       strategy = resume!(strategy)
-      assert strategy.halt == false
+      assert strategy.halt? == false
     end
   end
 end

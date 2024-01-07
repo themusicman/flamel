@@ -56,7 +56,7 @@ def authorize(%Context{} = context) do
   Context.halt!(context, "Not permitted")
 end
 
-def perform_action(%Context{halt: true}) do
+def perform_action(%Context{halt?: true}) do
   # do nothing
   context
 end
@@ -72,7 +72,7 @@ You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocol
 
 ### Retryable (experimental)
 
-Retryable functions that retry based on different strategies. Right now Linear and Exponential at the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`). 
+Retryable functions that retry based on different strategies. Right now Linear and Exponential are the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`). 
 
 ```elixir
 strategy = %Flamel.Retryable.Linear{} # or Flamel.Retryable.linear()
@@ -177,6 +177,17 @@ Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
 
 ```elixir
 Flamel.Map.atomize_keys(%{"first_name" => "Thomas", "dob" => "07/01/1981"}) == %{first_name: "Thomas", dob: "07/01/1981"}
+
+map =
+  Flamel.Map.assign(
+    %{assigns: %{hobbies: ["playing"]}},
+    :assigns,
+    set: [name: "Osa"],
+    push: [hobbies: ["soccer", "coloring"]]
+  )
+
+get_in(map, [:assigns, :hobbies]) == ["soccer", "coloring", "playing"]
+get_in(map, [:assigns, :name]) == "Osa"
 
 Flamel.Map.Indifferent.get(%{test: "value"}, "test") == "value"
 

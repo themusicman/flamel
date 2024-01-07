@@ -72,7 +72,7 @@ defmodule Flamel.Retryable do
   """
 
   @spec try(term(), function()) :: term()
-  def try(%{halt: true} = strategy, _func) do
+  def try(%{halt?: true} = strategy, _func) do
     {:error, nil, strategy}
   end
 
@@ -92,7 +92,7 @@ defmodule Flamel.Retryable do
       {:ok, result, strategy} ->
         {:ok, result, strategy}
 
-      {:error, %{halt: _, assigns: _} = strategy} = error ->
+      {:error, %{halt?: _, assigns: _} = strategy} = error ->
         Logger.error("#{__MODULE__}.execute error=#{inspect(error)}")
         try(Flamel.Retryable.calc(strategy), func)
 

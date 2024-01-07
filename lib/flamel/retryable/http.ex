@@ -11,7 +11,7 @@ defmodule Flamel.Retryable.Http do
           base: integer(),
           with_jitter?: boolean(),
           assigns: map(),
-          halt: boolean(),
+          halt?: boolean(),
           reason: binary() | nil
         }
   defstruct attempt: 1,
@@ -22,30 +22,35 @@ defmodule Flamel.Retryable.Http do
             max_interval: 8,
             with_jitter?: false,
             assigns: %{},
-            halt: false,
+            halt?: false,
             reason: nil
 end
 
 defimpl Flamel.Contextable, for: Flamel.Retryable.Http do
   alias Flamel.Retryable.Http
+  alias Flamel.Map
 
   def assign(%Http{} = context, key, value) when is_atom(key) do
-    %{context | assigns: Map.put(context.assigns, key, value)}
+    Map.assign(context, :assigns, set: [{key, value}])
   end
 
   def assign(%Http{} = context, map) when is_map(map) do
-    %{context | assigns: Map.merge(context.assigns, map)}
+    Map.assign(context, :assigns, map)
+  end
+
+  def assign(%Http{} = context, args) when is_list(args) do
+    Map.assign(context, :assigns, args)
   end
 
   def halt!(%Http{} = context, reason) do
-    %{context | halt: true, reason: reason}
+    Map.assign(context, set: [halt?: true, reason: reason])
   end
 
-  def halted?(%Http{halt: true}), do: true
+  def halted?(%Http{halt?: true}), do: true
   def halted?(_), do: false
 
   def resume!(%Http{} = context) do
-    %{context | halt: false}
+    Map.assign(context, set: [halt?: false, reason: nil])
   end
 end
 

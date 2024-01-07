@@ -10,7 +10,7 @@ defmodule Flamel.Retryable.Linear do
           base: integer(),
           with_jitter?: boolean(),
           assigns: map(),
-          halt: boolean(),
+          halt?: boolean(),
           reason: binary() | nil
         }
   defstruct attempt: 0,
@@ -20,7 +20,7 @@ defmodule Flamel.Retryable.Linear do
             max_interval: 5_000,
             with_jitter?: false,
             assigns: %{},
-            halt: false,
+            halt?: false,
             reason: nil
 end
 
@@ -99,23 +99,28 @@ end
 
 defimpl Flamel.Contextable, for: Flamel.Retryable.Linear do
   alias Flamel.Retryable.Linear
+  alias Flamel.Map
 
   def assign(%Linear{} = context, key, value) when is_atom(key) do
-    %{context | assigns: Map.put(context.assigns, key, value)}
+    Map.assign(context, :assigns, set: [{key, value}])
   end
 
   def assign(%Linear{} = context, map) when is_map(map) do
-    %{context | assigns: Map.merge(context.assigns, map)}
+    Map.assign(context, :assigns, map)
+  end
+
+  def assign(%Linear{} = context, args) when is_list(args) do
+    Map.assign(context, :assigns, args)
   end
 
   def halt!(%Linear{} = context, reason) do
-    %{context | halt: true, reason: reason}
+    Map.assign(context, set: [halt?: true, reason: reason])
   end
 
-  def halted?(%Linear{halt: true}), do: true
+  def halted?(%Linear{halt?: true}), do: true
   def halted?(_), do: false
 
   def resume!(%Linear{} = context) do
-    %{context | halt: false}
+    Map.assign(context, set: [halt?: false, reason: nil])
   end
 end
