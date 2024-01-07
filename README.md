@@ -29,13 +29,13 @@ end
 
 ### Context
 
-Here is a trivial example: 
+Ability to create a context that can be used to build function pipelines
 
 ```elixir
 alias Flamel.Context
 
 context =
-  Context.new()
+  %Context{}
   |> assign_user(user)
   |> authorize()
   |> perform_action()
@@ -66,6 +66,37 @@ def perform_action(%Context{assigns: %{user: user}} = context) do
   Context.assign(context, %{action_performed_by: user, action_performed?: true})
 end
 
+```
+
+You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocols. You can implement the `Flamel.Contextable` protocol for your own data type. Look at the interals of `Flamel.Retryable.Exponential` and `Flamel.Retryable.Linear` for an example. 
+
+### Retryable
+
+Retryable functions that retry based on different strategies. Right now Linear and Exponential at the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`). 
+
+```elixir
+strategy = %Flamel.Retryable.Linear{} # or Flamel.Retryable.linear()
+Flamel.Retryable.try(strategy, fn strategy -> {:ok, "success", strategy} end)
+{:ok, "success", strategy}
+```
+
+You can also assign values to the strategy since it implements `Flamel.Contextable`.
+
+```elixir
+strategy = %Flamel.Retryable.Exponential{} # or Flamel.Retryable.exponential()
+import Flamel.Context
+
+Flamel.Retryable.try(strategy, fn strategy ->
+  case make_http_request(url, payload) do
+    {:ok, result} ->
+      {:ok, result, strategy}
+
+    {:error, status, reason} ->
+      {:error, reason, assign(strategy, :http_status, status)}
+  end
+end)
+
+{:ok, "success", strategy}
 ```
 
 ### Utility 
