@@ -99,6 +99,9 @@ end)
 {:ok, "success", strategy}
 ```
 
+There is a `Flamel.Retryable.Http` strategy but it currently just implements the Exponential strategy. The intent is to 
+change the retry interval based on the HTTP status but this is not implemented yet. PRs are welcome. ;)
+
 ### Utility 
 
 ```elixir
