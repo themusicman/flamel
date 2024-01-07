@@ -45,8 +45,6 @@ defmodule Flamel.Context do
 
   """
 
-  alias __MODULE__
-
   @typedoc """
   Flamel.Context
   """
@@ -172,29 +170,5 @@ defmodule Flamel.Context do
 end
 
 defimpl Flamel.Contextable, for: Flamel.Context do
-  alias Flamel.Context
-  alias Flamel.Map
-
-  def assign(%Context{} = context, key, value) when is_atom(key) do
-    Map.assign(context, :assigns, set: [{key, value}])
-  end
-
-  def assign(%Context{} = context, map) when is_map(map) do
-    Map.assign(context, :assigns, map)
-  end
-
-  def assign(%Context{} = context, args) when is_list(args) do
-    Map.assign(context, :assigns, args)
-  end
-
-  def halt!(%Context{} = context, reason) do
-    Map.assign(context, set: [halt?: true, reason: reason])
-  end
-
-  def halted?(%Context{halt?: true}), do: true
-  def halted?(_), do: false
-
-  def resume!(%Context{} = context) do
-    Map.assign(context, set: [halt?: false, reason: nil])
-  end
+  use Flamel.Contextable.Base
 end
