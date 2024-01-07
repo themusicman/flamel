@@ -62,8 +62,6 @@ defimpl Flamel.Retryable.Strategy, for: Flamel.Retryable.Http do
   Back off exponentially for HTTP 420 errors. Start with a 1 minute wait and double each attempt. Note that every HTTP 420 received increases the time you must wait until rate limiting will no longer will be in effect for your account.
   """
   def calc(strategy) do
-    raise "DO NOT USE"
-
     if strategy.attempt == strategy.max_attempts do
       {:stop, strategy}
     else

@@ -55,7 +55,6 @@ defmodule Flamel.Retryable do
   """
   @spec http(keyword()) :: Flamel.Retryable.Http.t()
   def http(args \\ []) do
-    raise "DO NOT USE"
     struct!(Flamel.Retryable.Http, args)
   end
 
