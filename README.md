@@ -132,6 +132,15 @@ Flamel.unwrap_ok_or_nil({:error, "boom!"}) == nil
 
 ```
 
+### Module
+
+Detect if a module implements a behaviour.
+
+```elixir
+Flamel.Module.implements?(MyApp.Sender, MyApp.Worker) == true
+```
+
+
 ### Predicates
 
 ```elixir
