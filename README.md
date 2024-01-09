@@ -51,16 +51,19 @@ LiveView, Genservers and the like that use `wrap/2` under the hood. These
 functions are great for use when piping. 
 
 ```elixir
-Flamel.ok(["apple", "pear"]) == {:ok, ["apple", "pear"]}
+import Flamel.Wrap
+
+ok(["apple", "pear"]) == {:ok, ["apple", "pear"]}
 
 socket
 |> assign(:user, user)
-|> Flamel.ok()
+|> ok()
 
 socket
 |> assign(:user, user)
-|> Flamel.noreply()
+|> noreply()
 ```
+The `ok/1`, `noreply/1` helper functions were inspired by this [tweet](https://twitter.com/germsvel/status/1744686958196973787).
 
 `unwrap_*` functions assists with handling functions that return a value wrapped
 in a tuple.
