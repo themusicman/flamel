@@ -12,7 +12,7 @@ by adding `flamel` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:flamel, "~> 1.3.0"}
+    {:flamel, "~> 1.4.0"}
   ]
 end
 ```
