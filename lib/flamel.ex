@@ -120,6 +120,63 @@ defmodule Flamel do
   def unwrap({:error, value}), do: value
 
   @doc """
+  Takes a value and wraps it in a tuple with the specified 
+  atom as the first item
+
+  ## Examples
+
+      iex> Flamel.wrap(:ok, [])
+      {:ok, []}
+
+      iex> Flamel.wrap(:error, "message")
+      {:error, "message"}
+  """
+  @spec wrap(atom(), term()) :: {atom(), term()}
+  def wrap(item, value), do: {item, value}
+
+  @doc """
+  Takes a value and wraps it in a :ok tuple
+
+  ## Examples
+
+      iex> Flamel.ok([])
+      {:ok, []}
+
+      iex> Flamel.ok("message")
+      {:ok, "message"}
+  """
+  @spec ok(term()) :: {:ok, term()}
+  def ok(value), do: Flamel.wrap(:ok, value)
+
+  @doc """
+  Takes a value and wraps it in a :error tuple
+
+  ## Examples
+
+      iex> Flamel.error([])
+      {:error, []}
+
+      iex> Flamel.error("message")
+      {:error, "message"}
+  """
+  @spec error(term()) :: {:error, term()}
+  def error(value), do: Flamel.wrap(:error, value)
+
+  @doc """
+  Takes a value and wraps it in a :noreply tuple
+
+  ## Examples
+
+      iex> Flamel.noreply([])
+      {:noreply, []}
+
+      iex> Flamel.noreply("message")
+      {:noreply, "message"}
+  """
+  @spec noreply(term()) :: {:noreply, term()}
+  def noreply(value), do: Flamel.wrap(:noreply, value)
+
+  @doc """
   Checks if something is blank?
 
   ## Examples
