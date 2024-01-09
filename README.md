@@ -27,6 +27,51 @@ end
 
 ## Examples
 
+### Utility 
+
+`try_and_return` can be used with a function that throws and exception when you 
+want to use that function in a `with` statement.
+
+```elixir
+Flamel.try_and_return(fn -> :ok end) == :ok
+
+Flamel.try_and_return(fn -> raise "error" end, {:ok, :default_value}) == {:ok, :default_value}
+```
+
+`wrap` function assists with wrapping a value in a tuple. 
+
+```elixir
+Flamel.wrap(:ok, []) == {:ok, []}
+
+Flamel.wrap(:error, "error") == {:error, "error"}
+```
+
+There other wrap helper functions that can come in handy when working with 
+LiveView, Genservers and the like that use `wrap/2` under the hood. These
+functions are great for use when piping. 
+
+```elixir
+Flamel.ok(["apple", "pear"]) == {:ok, ["apple", "pear"]}
+
+socket
+|> assign(:user, user)
+|> Flamel.ok()
+
+socket
+|> assign(:user, user)
+|> Flamel.noreply()
+```
+
+`unwrap_*` functions assists with handling functions that return a value wrapped
+in a tuple.
+
+```elixir
+Flamel.unwrap_ok!({:ok, []}) == []
+
+Flamel.unwrap_ok_or_nil({:error, "boom!"}) == nil
+```
+
+
 ### Context
 
 Ability to create a context that can be used to build function pipelines
@@ -119,18 +164,6 @@ result = Task.await(task)
 ```
 
 
-### Utility 
-
-```elixir
-Flamel.try_and_return(fn -> :ok end) == :ok
-
-Flamel.try_and_return(fn -> raise "error" end, {:ok, :default_value}) == {:ok, :default_value}
-
-Flamel.unwrap_ok!({:ok, []}) == []
-
-Flamel.unwrap_ok_or_nil({:error, "boom!"}) == nil
-
-```
 
 ### Module
 
