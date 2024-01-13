@@ -10,6 +10,6 @@ defprotocol Flamel.Retryable.Strategy do
   @doc """
   Calculate the next retry interval. It might also signal to stop retrying
   """
-  @spec calc(term()) :: {:retry, Flamel.Retryable.interval(), term()} | {:stop, term()}
+  @spec calc(term()) :: {term()} | {term()}
   def calc(t)
 end
