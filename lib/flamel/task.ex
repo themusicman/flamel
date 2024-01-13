@@ -2,7 +2,6 @@ defmodule Flamel.Task do
   @moduledoc """
   Provides a few convenience functions for common Task uses
   """
-  @env Mix.env()
 
   @doc """
   Execute a function after a specified delay interval.
@@ -30,9 +29,10 @@ defmodule Flamel.Task do
     end
 
     shutdown_timeout = Keyword.get(opts, :shutdown_timeout, 5_000)
+    env = Keyword.get(opts, :env, nil)
     supervisor = Keyword.get(opts, :supervisor, __MODULE__)
 
-    if @env == :test do
+    if env == :test do
       func.()
     else
       Task.Supervisor.start_child(
