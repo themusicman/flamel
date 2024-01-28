@@ -58,6 +58,7 @@ defimpl Flamel.Boolean, for: BitString do
   def to("No" = value) when is_binary(value), do: false
   def to("no" = value) when is_binary(value), do: false
   def to("false" = value) when is_binary(value), do: false
+  def to("FALSE" = value) when is_binary(value), do: false
   def to("0" = value) when is_binary(value), do: false
 
   def to(value) do
