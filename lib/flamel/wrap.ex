@@ -224,4 +224,15 @@ defmodule Flamel.Wrap do
 
   @spec continue(term(), term()) :: {:continue, term(), term()}
   def continue(first, second), do: Flamel.Wrap.wrap(:continue, first, second)
+
+  @doc """
+  Takes a value and wraps it in a :stop tuple
+
+  ## Examples
+
+      iex> Flamel.Wrap.stop(:shutdown, %{})
+      {:stop, :shutdown, %{}}
+  """
+  @spec stop(term(), term()) :: {:stop, term(), term()}
+  def stop(first, second), do: Flamel.Wrap.wrap(:stop, first, second)
 end
