@@ -66,6 +66,12 @@ defmodule Flamel do
 
       iex> Flamel.blank?(1)
       false
+
+      iex> Flamel.blank?(true)
+      false
+
+      iex> Flamel.blank?(false)
+      false
   """
   def blank?(value) do
     Flamel.Blank.blank?(value)

@@ -21,6 +21,7 @@ end
 
 defimpl Flamel.Blank, for: Atom do
   def blank?(nil), do: true
+  def blank?(_), do: false
 end
 
 defimpl Flamel.Blank, for: List do
