@@ -5,6 +5,17 @@ defmodule Flamel.RetryableTest do
   alias Flamel.Retryable
   import Flamel.Context
 
+  setup do
+    children = [
+      {Task.Supervisor, name: Flamel.Task}
+    ]
+
+    opts = [strategy: :one_for_one, name: Flamel.Supervisor]
+    {:ok, pid} = Supervisor.start_link(children, opts)
+
+    {:ok, pid: pid}
+  end
+
   describe "try/2" do
     test "returns a result when successful" do
       strategy = Retryable.linear()

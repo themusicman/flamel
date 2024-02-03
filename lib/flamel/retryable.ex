@@ -77,18 +77,16 @@ defmodule Flamel.Retryable do
   end
 
   def try(strategy, func) do
-    task =
-      Flamel.Task.delay(
-        strategy.interval,
-        # turtles all the way down
-        fn ->
-          Flamel.try_and_return(fn ->
-            func.(strategy)
-          end)
-        end
-      )
-
-    case Task.await(task) do
+    Flamel.Task.delay(
+      strategy.interval,
+      # turtles all the way down
+      fn ->
+        Flamel.try_and_return(fn ->
+          func.(strategy)
+        end)
+      end
+    )
+    |> case do
       {:ok, result, strategy} ->
         {:ok, result, strategy}
 
