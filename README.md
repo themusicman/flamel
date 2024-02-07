@@ -74,7 +74,6 @@ Flamel.unwrap_ok!({:ok, []}) == []
 Flamel.unwrap_ok_or_nil({:error, "boom!"}) == nil
 ```
 
-
 ### Context
 
 Ability to create a context that can be used to build function pipelines
@@ -217,6 +216,30 @@ Flamel.Moment.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.0
 
 Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
 ```
+
+### Current Time Mocking
+
+In your application code you will need to use `Flamel.Moment.CurrentTime`:
+
+```elixir
+now = Flamel.Moment.CurrentTime.utc_now()
+```
+
+Then if you want to mock the current time you can call `Flamel.Moment.CurrentTime.time_travel` in your test:
+
+```elixir
+
+DateTime.utc_now() 
+|> DateTime.add(3600, :second)
+|> Flamel.Moment.CurrentTime.time_travel() do
+  # inside here the current time if mocked to the value you pass to time_travel
+  assert Flamel.Moment.CurrentTime.utc_now() == now
+end
+
+# outside the block we are back to unmocked time
+```
+
+***IMPORTANT: This mocking only applies to the process that `Flamel.Moment.CurrentTime.time_travel` is called in***
 
 ### Maps/Structs
 
