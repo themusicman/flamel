@@ -217,6 +217,8 @@ Flamel.Moment.to_iso8601(~U[2000-10-31 06:30:00.000Z]) == "2000-10-31T06:30:00.0
 Flamel.Moment.to_iso8601(~D[2019-10-31]) == "2019-10-31"
 ```
 
+All of the to_* functions are implemented using [Protocols](https://hexdocs.pm/elixir/1.16/protocols.html). So you can implement you own behavior for types that do not already have implementations.
+
 ### Current Time Mocking
 
 In your application code you will need to use `Flamel.Moment.CurrentTime`:
@@ -229,10 +231,10 @@ Then if you want to mock the current time you can call `Flamel.Moment.CurrentTim
 
 ```elixir
 
-DateTime.utc_now() 
-|> DateTime.add(3600, :second)
-|> Flamel.Moment.CurrentTime.time_travel() do
-  # inside here the current time if mocked to the value you pass to time_travel
+now = DateTime.utc_now() |> DateTime.add(3600, :second)
+
+Flamel.Moment.CurrentTime.time_travel(now) do
+  # inside here the current time is mocked to the value you pass to time_travel
   assert Flamel.Moment.CurrentTime.utc_now() == now
 end
 
@@ -266,7 +268,6 @@ Flamel.Map.Safely.get(%Person{name: "Todd"}, &String.upcase(&1.name)) == "TODD"
 Flamel.Map.Safely.get(%{name: "Todd"}, &String.upcase(&1.bad_field), "N/A") == "N/A"
 ```
 
-All of the to_* functions are implemented using [Protocols](https://hexdocs.pm/elixir/1.16/protocols.html). So you can implement you own behavior for types that do not already have implementations.
 
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
