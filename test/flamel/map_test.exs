@@ -38,4 +38,28 @@ defmodule Flamel.MapTest do
       assert get_in(map, [:assigns, :name]) == "Osa"
     end
   end
+
+  describe "put_if_blank/3" do
+    test "when value is blank puts value in map" do
+      values =
+        Flamel.Map.put_if_blank(
+          %{first_name: nil},
+          :first_name,
+          fn -> "Bob" end
+        )
+
+      assert values[:first_name] == "Bob"
+    end
+
+    test "when value is not blank does not put value in map" do
+      values =
+        Flamel.Map.put_if_blank(
+          %{first_name: "Jill"},
+          :first_name,
+          fn -> "Bob" end
+        )
+
+      assert values[:first_name] == "Jill"
+    end
+  end
 end

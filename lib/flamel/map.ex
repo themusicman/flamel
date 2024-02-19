@@ -127,4 +127,18 @@ defmodule Flamel.Map do
       end)
     end)
   end
+
+  @doc """
+  Puts a value in a map if the value for that key is blank
+  """
+  @spec put_if_blank(map(), binary() | atom(), function()) :: map()
+  def put_if_blank(values, key, fun) do
+    Flamel.Map.Indifferent.get(values, key, nil)
+    |> then(fn value ->
+      if Flamel.blank?(value), do: fun.(), else: value
+    end)
+    |> then(fn value ->
+      Map.put(values, key, value)
+    end)
+  end
 end
