@@ -132,6 +132,24 @@ defmodule Flamel do
   def boolean?(value) when not is_boolean(value), do: false
 
   @doc """
+  Is this a DateTime
+
+  ## Examples
+
+      iex> Flamel.datetime?(true)
+      false
+
+      iex> Flamel.datetime?(~U[2021-12-21 18:27:00Z])
+      true
+
+      iex> Flamel.datetime?("2021-12-21T18:27:00Z")
+      true
+  """
+  def datetime?(value) do
+    Flamel.Moment.to_datetime(value) != nil
+  end
+
+  @doc """
   Convert something to a boolean
 
   ## Examples
