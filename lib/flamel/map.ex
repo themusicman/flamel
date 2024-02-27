@@ -141,4 +141,17 @@ defmodule Flamel.Map do
       Map.put(values, key, value)
     end)
   end
+
+  @doc """
+  Recursively converts a struct to a map
+  """
+  @spec from_struct(struct()) :: map()
+  def from_struct(value) do
+    value
+    |> Map.from_struct()
+    |> Map.new(fn
+      {k, v} when is_struct(v) -> {k, from_struct(v)}
+      {k, v} -> {k, v}
+    end)
+  end
 end

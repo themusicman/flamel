@@ -3,10 +3,15 @@ defmodule Flamel.MapTest do
   doctest Flamel.Map
 
   defmodule Person do
-    defstruct name: "", dob: ""
+    defstruct name: "", dob: "", address: nil
+  end
+
+  defmodule Address do
+    defstruct street: "", zip_code: ""
   end
 
   alias Person
+  alias Address
 
   describe "atomize_map/1 when the map includes a struct" do
     test "returns map with atom keys if map includes a DateTime" do
@@ -60,6 +65,23 @@ defmodule Flamel.MapTest do
         )
 
       assert values[:first_name] == "Jill"
+    end
+  end
+
+  describe "from_struct/1" do
+    test "returns a nested map" do
+      value = %Person{
+        name: "Bill",
+        address: %Address{street: "123 Main Street", zip_code: "32229"}
+      }
+
+      result = Flamel.Map.from_struct(value)
+
+      assert %{
+               name: "Bill",
+               address: %{street: "123 Main Street", zip_code: "32229"},
+               dob: ""
+             } == result
     end
   end
 end
