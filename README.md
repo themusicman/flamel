@@ -12,7 +12,7 @@ by adding `flamel` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:flamel, "~> 1.7.0"}
+    {:flamel, "~> 1.9.0"}
   ]
 end
 ```
@@ -27,9 +27,9 @@ end
 
 ## Examples
 
-### Utility 
+### Utility
 
-`try_and_return` can be used with a function that throws and exception when you 
+`try_and_return` can be used with a function that throws and exception when you
 want to use that function in a `with` statement.
 
 ```elixir
@@ -38,7 +38,7 @@ Flamel.try_and_return(fn -> :ok end) == :ok
 Flamel.try_and_return(fn -> raise "error" end, {:ok, :default_value}) == {:ok, :default_value}
 ```
 
-`wrap` function assists with wrapping a value in a tuple. 
+`wrap` function assists with wrapping a value in a tuple.
 
 ```elixir
 Flamel.wrap(:ok, []) == {:ok, []}
@@ -46,9 +46,9 @@ Flamel.wrap(:ok, []) == {:ok, []}
 Flamel.wrap(:error, "error") == {:error, "error"}
 ```
 
-There other wrap helper functions that can come in handy when working with 
+There other wrap helper functions that can come in handy when working with
 LiveView, Genservers and the like that use `wrap/2` under the hood. These
-functions are great for use when piping. 
+functions are great for use when piping.
 
 ```elixir
 import Flamel.Wrap
@@ -115,11 +115,11 @@ end
 
 ```
 
-You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocols. You can implement the `Flamel.Contextable` protocol for your own data type. Look at the interals of `Flamel.Retryable.Exponential` and `Flamel.Retryable.Linear` for an example. 
+You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocols. You can implement the `Flamel.Contextable` protocol for your own data type. Look at the interals of `Flamel.Retryable.Exponential` and `Flamel.Retryable.Linear` for an example.
 
 ### Retryable (experimental)
 
-Retryable functions that retry based on different strategies. Right now Linear and Exponential are the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`). 
+Retryable functions that retry based on different strategies. Right now Linear and Exponential are the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`).
 
 ```elixir
 strategy = %Flamel.Retryable.Linear{} # or Flamel.Retryable.linear()
@@ -146,7 +146,7 @@ end)
 {:ok, "success", strategy}
 ```
 
-There is a `Flamel.Retryable.Http` strategy but it currently just implements the Exponential strategy. The intent is to 
+There is a `Flamel.Retryable.Http` strategy but it currently just implements the Exponential strategy. The intent is to
 change the retry interval based on the HTTP status but this is not implemented yet. PRs are welcome. ;)
 
 ### Delayed Task (experimental)
@@ -243,6 +243,16 @@ end
 
 ***IMPORTANT: This mocking only applies to the process that `Flamel.Moment.CurrentTime.time_travel` is called in***
 
+### Number
+
+```elixir
+Flamel.Number.clamp(-10, 0) == 0
+
+Flamel.Number.clamp(10, 0) == 10
+
+Flamel.Number.clamp(10, 0, 5) == 5
+```
+
 ### Maps/Structs
 
 ```elixir
@@ -266,6 +276,10 @@ Flamel.Map.Indifferent.get(%{test: "value"}, :test) == "value"
 Flamel.Map.Safely.get(%Person{name: "Todd"}, &String.upcase(&1.name)) == "TODD"
 
 Flamel.Map.Safely.get(%{name: "Todd"}, &String.upcase(&1.bad_field), "N/A") == "N/A"
+
+Flamel.Map.put_if_present(%{name: "Todd"}, :name, nil) == %{name: "Todd"}
+
+Flamel.Map.put_if_present(%{name: "Todd"}, :name, "Bob") == %{name: "Bob"}
 ```
 
 
@@ -273,4 +287,3 @@ Flamel.Map.Safely.get(%{name: "Todd"}, &String.upcase(&1.bad_field), "N/A") == "
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/flamel>.
-
