@@ -68,6 +68,30 @@ defmodule Flamel.MapTest do
     end
   end
 
+  describe "put_if_present/3" do
+    test "when value is present puts value in map" do
+      values =
+        Flamel.Map.put_if_present(
+          %{},
+          :first_name,
+          "Bob"
+        )
+
+      assert values[:first_name] == "Bob"
+    end
+
+    test "when value is not present does not put value in map" do
+      values =
+        Flamel.Map.put_if_blank(
+          %{first_name: "Jill"},
+          :first_name,
+          nil
+        )
+
+      assert values[:first_name] == "Jill"
+    end
+  end
+
   describe "from_struct/1" do
     test "returns a nested map" do
       value = %Person{

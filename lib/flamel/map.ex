@@ -58,16 +58,16 @@ defmodule Flamel.Map do
   end
 
   @doc """
-  Assign values in a map 
+  Assign values in a map
 
   ## Examples
 
       iex> map = Flamel.Map.assign(%{tags: []}, push: [tags: "new"])
-      iex> map[:tags] 
+      iex> map[:tags]
       iex> ["new"]
 
       iex> map = Flamel.Map.assign(%{}, set: [name: "Clark"])
-      iex> map[:name] 
+      iex> map[:name]
       iex> "Clark"
 
       iex> map = Flamel.Map.assign(%{assigns: %{}}, :assigns, set: [name: "Osa"])
@@ -140,6 +140,18 @@ defmodule Flamel.Map do
     |> then(fn value ->
       Map.put(values, key, value)
     end)
+  end
+
+  @doc """
+  Puts a value in a map if the value is present else it returns the map mutated
+  """
+  @spec put_if_present(map(), binary() | atom(), any()) :: map()
+  def put_if_present(values, key, value) do
+    if Flamel.present?(value) do
+      Map.put(values, key, value)
+    else
+      values
+    end
   end
 
   @doc """
