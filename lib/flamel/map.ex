@@ -13,6 +13,9 @@ defmodule Flamel.Map do
       iex> Flamel.Map.stringify_keys(%{a: 1, b: 2})
       %{"a" => 1, "b" => 2}
 
+      iex> Flamel.Map.stringify_keys(%{a: 1, b: [%{a: 1}, %{b: 2}]})
+      %{"a" => 1, "b" => [%{"a" => 1}, %{"b" => 2}]}
+
       iex> Flamel.Map.stringify_keys(%{a: 1, b: 2, c: %{d: 3, e: 4}})
       %{"a" => 1, "b" => 2, "c" => %{"d" => 3, "e" => 4}}
 
@@ -27,6 +30,7 @@ defmodule Flamel.Map do
     value
     |> Map.new(fn
       {k, v} when is_map(v) -> {Flamel.to_string(k), stringify_keys(v)}
+      {k, v} when is_list(v) -> {Flamel.to_string(k), Enum.map(v, &stringify_keys(&1))}
       {k, v} -> {Flamel.to_string(k), v}
     end)
   end
@@ -38,6 +42,9 @@ defmodule Flamel.Map do
 
       iex> Flamel.Map.atomize_keys(%{"first_name" => "Thomas", "dob" => "07/01/1981"})
       %{first_name: "Thomas", dob: "07/01/1981"}
+
+      iex> Flamel.Map.atomize_keys(%{"first_name" => "Thomas", "dob" => "07/01/1981", "skills" => [%{"name" => "sewing"}]})
+      %{first_name: "Thomas", dob: "07/01/1981", skills: [%{name: "sewing"}]}
 
       iex> Flamel.Map.atomize_keys(%{"person" => %{"first_name" => "Thomas", "dob" => "07/01/1981"}})
       %{person: %{first_name: "Thomas", dob: "07/01/1981"}}
@@ -53,6 +60,7 @@ defmodule Flamel.Map do
     value
     |> Map.new(fn
       {k, v} when is_map(v) -> {Flamel.to_atom(k), atomize_keys(v)}
+      {k, v} when is_list(v) -> {Flamel.to_atom(k), Enum.map(v, &atomize_keys(&1))}
       {k, v} -> {Flamel.to_atom(k), v}
     end)
   end
