@@ -1,5 +1,6 @@
 defmodule Flamel.MomentTest do
   use ExUnit.Case
+
   doctest Flamel.Moment
 
   describe "to_datetime/1" do

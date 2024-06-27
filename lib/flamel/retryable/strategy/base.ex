@@ -1,4 +1,5 @@
 defmodule Flamel.Retryable.Strategy.Base do
+  @moduledoc false
   defmacro __using__(_opts) do
     quote do
       import Flamel.Context
@@ -32,15 +33,14 @@ defmodule Flamel.Retryable.Strategy.Base do
         0
       end
 
-      defp update_interval(%{max_attempts: max_attempts, attempt: attempt} = strategy)
-           when attempt == max_attempts do
+      defp update_interval(%{max_attempts: max_attempts, attempt: attempt} = strategy) when attempt == max_attempts do
         strategy
       end
 
       defp update_interval(strategy) do
         randomness = calculate_randomness(strategy)
 
-        interval =
+        case_result =
           case Enum.random([:plus, :minus]) do
             :plus ->
               calculate_interval(strategy) + randomness
@@ -48,15 +48,12 @@ defmodule Flamel.Retryable.Strategy.Base do
             :minus ->
               calculate_interval(strategy) - randomness
           end
-          |> then(fn
-            interval when interval < 0 ->
-              0
 
-            interval when interval > strategy.max_interval ->
-              strategy.max_interval
-
-            interval ->
-              interval
+        interval =
+          then(case_result, fn
+            interval when interval < 0 -> 0
+            interval when interval > strategy.max_interval -> strategy.max_interval
+            interval -> interval
           end)
 
         interval =

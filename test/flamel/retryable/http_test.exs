@@ -1,5 +1,6 @@
 defmodule Flamel.Retryable.HttpTest do
   use ExUnit.Case
+
   doctest Flamel.Retryable.Http
 
   describe "calc/1 with Flamel.Retryable.Http" do
@@ -32,8 +33,7 @@ defmodule Flamel.Retryable.HttpTest do
       assert strategy.attempt == 5
       assert strategy.interval == 8
 
-      assert {:stop,
-              %Flamel.Retryable.Http{attempt: 5, max_attempts: 5, interval: 8, multiplier: 2}} ==
+      assert {:stop, %Flamel.Retryable.Http{attempt: 5, max_attempts: 5, interval: 8, multiplier: 2}} ==
                Flamel.Retryable.calc(strategy)
     end
 

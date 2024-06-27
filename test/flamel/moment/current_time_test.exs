@@ -1,6 +1,8 @@
 defmodule Flamel.Moment.CurrentTimeTest do
   use ExUnit.Case
+
   alias Flamel.Moment.CurrentTime
+
   require Flamel.Moment.CurrentTime
 
   describe "mocked?/0" do
@@ -16,7 +18,7 @@ defmodule Flamel.Moment.CurrentTimeTest do
 
   describe "utc_now/0" do
     test "returns mocked utc_now" do
-      now = DateTime.utc_now() |> DateTime.add(3600, :second)
+      now = DateTime.add(DateTime.utc_now(), 3600, :second)
 
       CurrentTime.freeze(now)
 
@@ -25,25 +27,25 @@ defmodule Flamel.Moment.CurrentTimeTest do
     end
 
     test "returns real utc_now" do
-      current_now = CurrentTime.utc_now() |> DateTime.truncate(:second)
-      now = DateTime.utc_now() |> DateTime.truncate(:second)
+      current_now = DateTime.truncate(CurrentTime.utc_now(), :second)
+      now = DateTime.truncate(DateTime.utc_now(), :second)
       assert DateTime.compare(current_now, now) == :eq
     end
   end
 
   describe "time_travel/2" do
     test "mocks the current time based on the value given" do
-      to = DateTime.utc_now() |> DateTime.add(3600, :second)
+      to = DateTime.add(DateTime.utc_now(), 3600, :second)
 
       CurrentTime.time_travel to do
         assert CurrentTime.utc_now() == to
-        current_now = CurrentTime.utc_now() |> DateTime.truncate(:second)
-        now = DateTime.utc_now() |> DateTime.truncate(:second)
+        current_now = DateTime.truncate(CurrentTime.utc_now(), :second)
+        now = DateTime.truncate(DateTime.utc_now(), :second)
         assert DateTime.compare(current_now, now) != :eq
       end
 
-      current_now = CurrentTime.utc_now() |> DateTime.truncate(:second)
-      now = DateTime.utc_now() |> DateTime.truncate(:second)
+      current_now = DateTime.truncate(CurrentTime.utc_now(), :second)
+      now = DateTime.truncate(DateTime.utc_now(), :second)
       assert DateTime.compare(current_now, now) == :eq
     end
   end

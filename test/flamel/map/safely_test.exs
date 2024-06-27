@@ -1,13 +1,14 @@
 defmodule Flamel.Map.SafelyTest do
   use ExUnit.Case
-  doctest Flamel.Map.Safely
+
   import ExUnit.CaptureLog
 
+  doctest Flamel.Map.Safely
+
   defmodule Person do
+    @moduledoc false
     defstruct name: "", dob: ""
   end
-
-  alias Person
 
   describe "get/3 when passed a field" do
     test "returns the value for that field" do

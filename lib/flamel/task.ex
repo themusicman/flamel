@@ -35,8 +35,8 @@ defmodule Flamel.Task do
     supervisor = Keyword.get(opts, :supervisor, __MODULE__)
     delay = Keyword.get(opts, :delay, nil)
 
-    Task.Supervisor.async(
-      supervisor,
+    supervisor
+    |> Task.Supervisor.async(
       fn ->
         if delay, do: Process.sleep(delay)
         func.()
@@ -63,8 +63,8 @@ defmodule Flamel.Task do
     shutdown_timeout = Keyword.get(opts, :shutdown_timeout, 5_000)
     supervisor = Keyword.get(opts, :supervisor, __MODULE__)
 
-    Task.Supervisor.async_stream(
-      supervisor,
+    supervisor
+    |> Task.Supervisor.async_stream(
       stream,
       fn item ->
         func.(item)

@@ -1,4 +1,7 @@
 defmodule Flamel.Contextable.Base do
+  @moduledoc """
+  Base module that includes functions for working with `Flamel.Context`
+  """
   defmacro __using__(_opts) do
     quote do
       def assign(context, key, value) when is_atom(key) do

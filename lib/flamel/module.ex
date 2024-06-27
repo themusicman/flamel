@@ -1,4 +1,8 @@
 defmodule Flamel.Module do
+  @moduledoc """
+  A set of helper functions for modules
+  """
+
   @doc """
   Returns `true` if a module implements behaviour.
   """

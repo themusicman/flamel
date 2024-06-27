@@ -13,7 +13,7 @@ defmodule Flamel.Struct do
 
   """
   def fields(struct) when is_struct(struct) do
-    Map.keys(struct) |> List.delete(:__struct__)
+    struct |> Map.keys() |> List.delete(:__struct__)
   end
 
   def fields(_struct) do

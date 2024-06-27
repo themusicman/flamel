@@ -1,17 +1,17 @@
 defmodule Flamel.MapTest do
   use ExUnit.Case
+
   doctest Flamel.Map
 
   defmodule Person do
+    @moduledoc false
     defstruct name: "", dob: "", address: nil
   end
 
   defmodule Address do
+    @moduledoc false
     defstruct street: "", zip_code: ""
   end
-
-  alias Person
-  alias Address
 
   describe "atomize_map/1 when the map includes a struct" do
     test "returns map with atom keys if map includes a DateTime" do

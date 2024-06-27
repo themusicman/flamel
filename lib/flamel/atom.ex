@@ -38,6 +38,7 @@ defimpl Flamel.Atom, for: Float do
 end
 
 defimpl Flamel.Atom, for: BitString do
+  # sobelow_skip ["DOS.StringToAtom"]
   def to(value) when is_binary(value) do
     String.to_atom(value)
   end

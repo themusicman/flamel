@@ -46,7 +46,7 @@ defmodule Flamel.Retryable do
   Create an HTTP Retry Strategy.
 
   This strategy requires setting the HTTP status code so that
-  it can adjust the retry interval based on the status. 
+  it can adjust the retry interval based on the status.
 
   ## Examples
 
@@ -71,14 +71,14 @@ defmodule Flamel.Retryable do
       iex> {:ok, "success", strategy}
   """
 
-  @spec try(term(), function()) :: term()
+  @spec try(%{required(:halt?) => boolean()}, function()) :: term()
   def try(%{halt?: true} = strategy, _func) do
     {:error, nil, strategy}
   end
 
   def try(strategy, func) do
-    Flamel.Task.delay(
-      strategy.interval,
+    strategy.interval
+    |> Flamel.Task.delay(
       # turtles all the way down
       fn ->
         Flamel.try_and_return(fn ->

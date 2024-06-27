@@ -1,4 +1,9 @@
 defmodule Flamel.Map.Indifferent do
+  @moduledoc """
+  A set of helper functions for accessing a map with indifferent access.
+  These functions are inspired by the behavior of Ruby/Rails, where keys in a hash can be accessed with indifferent access.
+  """
+
   @doc """
   Get a value from a map whether the key is a string or atom
 

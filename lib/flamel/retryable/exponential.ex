@@ -1,4 +1,36 @@
 defmodule Flamel.Retryable.Exponential do
+  @moduledoc """
+  ### Exponential Backoff Strategy Documentation
+
+  The exponential backoff strategy is a method for retrying failed requests by exponentially increasing the delay between retries. This approach involves doubling the delay time after each failed attempt, which helps to reduce the load on the system and provides time for the issue causing the failure to resolve.
+
+  #### Key Features:
+  - **Exponential Increase**: Delay between retries increases exponentially.
+  - **Doubling Factor**: Each retry delay is double the previous delay.
+  - **Effective for High-Failure-Rate Systems**: Helps manage retries when failure rates are high.
+  - **Adaptable Delay**: Delay increases quickly, reducing the number of retries over time.
+
+  #### Example:
+  - **Initial Delay**: 1 second
+
+  | Retry Attempt | Delay        |
+  |---------------|--------------|
+  | Retry 1       | 1 second     |
+  | Retry 2       | 2 seconds    |
+  | Retry 3       | 4 seconds    |
+  | Retry 4       | 8 seconds    |
+  | ...           | ...          |
+
+  #### Advantages:
+  - **Reduces Load**: Helps to reduce system load by spacing out retries.
+  - **Adapts to Failure Rates**: Quickly adapts to high failure rates by increasing delays.
+  - **Prevents Immediate Retries**: Reduces the chance of immediate repeated failures.
+
+  #### Disadvantages:
+  - **Complexity**: More complex to implement compared to linear strategies.
+  - **Long Delays**: Can lead to very long delays if retries continue to fail.
+  - **Latency Impact**: Not suitable for systems with strict latency requirements due to increasing delays.
+  """
   @typedoc """
   Exponential
   """

@@ -1,5 +1,6 @@
 defmodule Flamel.Retryable.ExponentialTest do
   use ExUnit.Case
+
   doctest Flamel.Retryable.Exponential
 
   describe "calc/1 with Flamel.Retryable.Exponential" do

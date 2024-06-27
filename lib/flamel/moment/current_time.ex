@@ -54,7 +54,7 @@ defmodule Flamel.Moment.CurrentTime do
   To mock the current timestamp use the `Flamel.Moment.CurrentTime.time_travel` function.
   """
   def timestamp do
-    utc_now() |> DateTime.to_unix(:second)
+    DateTime.to_unix(utc_now(), :second)
   end
 
   @doc """

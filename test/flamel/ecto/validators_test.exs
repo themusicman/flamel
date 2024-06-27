@@ -3,6 +3,7 @@ defmodule Flamel.Ecto.ValidatorsTest do
 
   import Ecto.Changeset
   import Flamel.Ecto.Validators
+
   alias Ecto.Changeset
 
   describe "validate_at_least_one_required/3" do
@@ -40,8 +41,7 @@ defmodule Flamel.Ecto.ValidatorsTest do
   describe "validate_required_if/3" do
     test "returns a changeset with an error added if the condition is met and the field is not present" do
       fields =
-        {%{phone: "", email: "someone@example.com", confirm: nil},
-         %{phone: :string, email: :string, confirm: :boolean}}
+        {%{phone: "", email: "someone@example.com", confirm: nil}, %{phone: :string, email: :string, confirm: :boolean}}
 
       attrs = %{}
 
@@ -64,8 +64,7 @@ defmodule Flamel.Ecto.ValidatorsTest do
 
     test "returns a changeset without an error added if the condition is met and the field is present" do
       fields =
-        {%{phone: "", email: "someone@example.com", confirm: true},
-         %{phone: :string, email: :string, confirm: :boolean}}
+        {%{phone: "", email: "someone@example.com", confirm: true}, %{phone: :string, email: :string, confirm: :boolean}}
 
       attrs = %{}
 
@@ -88,8 +87,7 @@ defmodule Flamel.Ecto.ValidatorsTest do
 
     test "returns a changeset without an error added if the condition is not met and the field is not present" do
       fields =
-        {%{phone: "", email: "", confirm: nil},
-         %{phone: :string, email: :string, confirm: :boolean}}
+        {%{phone: "", email: "", confirm: nil}, %{phone: :string, email: :string, confirm: :boolean}}
 
       attrs = %{}
 
@@ -112,8 +110,7 @@ defmodule Flamel.Ecto.ValidatorsTest do
 
     test "returns a changeset without an error added if the condition is not met and the field is present" do
       fields =
-        {%{phone: "", email: "", confirm: true},
-         %{phone: :string, email: :string, confirm: :boolean}}
+        {%{phone: "", email: "", confirm: true}, %{phone: :string, email: :string, confirm: :boolean}}
 
       attrs = %{}
 

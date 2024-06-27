@@ -21,12 +21,10 @@ defmodule Flamel do
   """
   @spec try_and_return(fun(), any()) :: any() | {:error, binary()}
   def try_and_return(callable, ret \\ nil) do
-    try do
-      callable.()
-    rescue
-      e ->
-        if ret, do: ret, else: {:error, e.message}
-    end
+    callable.()
+  rescue
+    e ->
+      if ret, do: ret, else: {:error, e.message}
   end
 
   defdelegate unwrap_ok!(value), to: Flamel.Wrap

@@ -37,7 +37,7 @@ end
 
 defimpl Flamel.Integer, for: Float do
   def to(value) do
-    value |> trunc()
+    trunc(value)
   end
 end
 

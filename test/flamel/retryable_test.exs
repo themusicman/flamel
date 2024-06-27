@@ -1,9 +1,12 @@
 defmodule Flamel.RetryableTest do
   use ExUnit.Case
+
   import ExUnit.CaptureLog
-  doctest Flamel.Retryable
-  alias Flamel.Retryable
   import Flamel.Context
+
+  alias Flamel.Retryable
+
+  doctest Flamel.Retryable
 
   setup do
     children = [

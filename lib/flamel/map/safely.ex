@@ -15,52 +15,46 @@ defmodule Flamel.Map.Safely do
 
   @spec get(map() | struct(), function() | atom(), any()) :: any()
   def get(var, func, default) when is_function(default) do
-    try do
-      get(var, func, default.(var))
-    rescue
-      e in KeyError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        nil
+    get(var, func, default.(var))
+  rescue
+    e in KeyError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      nil
 
-      e in RuntimeError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        nil
-    end
+    e in RuntimeError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      nil
   end
 
   def get(var, field, default) when is_atom(field) do
-    try do
-      if var do
-        Map.get(var, field, default)
-      else
-        default
-      end
-    rescue
-      e in BadMapError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        default
-
-      e in RuntimeError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        default
+    if var do
+      Map.get(var, field, default)
+    else
+      default
     end
+  rescue
+    e in BadMapError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      default
+
+    e in RuntimeError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      default
   end
 
   def get(var, func, default) when is_function(func) do
-    try do
-      if var do
-        func.(var)
-      else
-        default
-      end
-    rescue
-      e in KeyError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        default
-
-      e in RuntimeError ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        default
+    if var do
+      func.(var)
+    else
+      default
     end
+  rescue
+    e in KeyError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      default
+
+    e in RuntimeError ->
+      Logger.error(Exception.format(:error, e, __STACKTRACE__))
+      default
   end
 end

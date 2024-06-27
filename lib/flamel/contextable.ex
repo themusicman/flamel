@@ -1,6 +1,6 @@
 defprotocol Flamel.Contextable do
   @moduledoc """
-  The `Flamel.Contextable` protocol for working with something that 
+  The `Flamel.Contextable` protocol for working with something that
   stores a generic data structure and has the ability to.
   """
   @fallback_to_any true
@@ -14,7 +14,7 @@ defprotocol Flamel.Contextable do
   @doc """
   Merges values in a map into the assigns in the context.
   """
-  @spec assign(term(), map()) :: term()
+  @spec assign(term(), map() | keyword()) :: term()
   def assign(context, map)
 
   @doc """

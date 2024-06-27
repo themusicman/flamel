@@ -1,4 +1,7 @@
 defmodule Flamel.Retryable.Http do
+  @moduledoc """
+  DO NOT USE
+  """
   @typedoc """
   Http
   """
@@ -27,8 +30,8 @@ defmodule Flamel.Retryable.Http do
 end
 
 defimpl Flamel.Contextable, for: Flamel.Retryable.Http do
-  alias Flamel.Retryable.Http
   alias Flamel.Map
+  alias Flamel.Retryable.Http
 
   def assign(%Http{} = context, key, value) when is_atom(key) do
     Map.assign(context, :assigns, set: [{key, value}])
@@ -96,15 +99,14 @@ defimpl Flamel.Retryable.Strategy, for: Flamel.Retryable.Http do
     0
   end
 
-  defp update_interval(%{max_attempts: max_attempts, attempt: attempt} = strategy)
-       when attempt == max_attempts do
+  defp update_interval(%{max_attempts: max_attempts, attempt: attempt} = strategy) when attempt == max_attempts do
     strategy
   end
 
   defp update_interval(strategy) do
     randomness = calculate_randomness(strategy)
 
-    interval =
+    case_result =
       case Enum.random([:plus, :minus]) do
         :plus ->
           calculate_interval(strategy) + randomness
@@ -112,15 +114,12 @@ defimpl Flamel.Retryable.Strategy, for: Flamel.Retryable.Http do
         :minus ->
           calculate_interval(strategy) - randomness
       end
-      |> then(fn
-        interval when interval < 0 ->
-          0
 
-        interval when interval > strategy.max_interval ->
-          strategy.max_interval
-
-        interval ->
-          interval
+    interval =
+      then(case_result, fn
+        interval when interval < 0 -> 0
+        interval when interval > strategy.max_interval -> strategy.max_interval
+        interval -> interval
       end)
 
     interval =

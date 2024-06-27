@@ -1,12 +1,12 @@
 defmodule Flamel.MappableTest do
   use ExUnit.Case
+
   doctest Flamel.Mappable
 
   defmodule Person do
+    @moduledoc false
     defstruct name: "", dob: ""
   end
-
-  alias Person
 
   describe "to/1" do
     test "returns map for a struct" do

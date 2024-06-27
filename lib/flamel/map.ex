@@ -27,8 +27,7 @@ defmodule Flamel.Map do
   def stringify_keys(value) when is_struct(value), do: value
 
   def stringify_keys(value) when is_map(value) do
-    value
-    |> Map.new(fn
+    Map.new(value, fn
       {k, v} when is_map(v) -> {Flamel.to_string(k), stringify_keys(v)}
       {k, v} when is_list(v) -> {Flamel.to_string(k), Enum.map(v, &stringify_keys(&1))}
       {k, v} -> {Flamel.to_string(k), v}
@@ -57,8 +56,7 @@ defmodule Flamel.Map do
   def atomize_keys(value) when is_struct(value), do: value
 
   def atomize_keys(value) when is_map(value) do
-    value
-    |> Map.new(fn
+    Map.new(value, fn
       {k, v} when is_map(v) -> {Flamel.to_atom(k), atomize_keys(v)}
       {k, v} when is_list(v) -> {Flamel.to_atom(k), Enum.map(v, &atomize_keys(&1))}
       {k, v} -> {Flamel.to_atom(k), v}
@@ -89,7 +87,8 @@ defmodule Flamel.Map do
 
   @spec assign(map(), atom(), keyword()) :: map()
   def assign(map, key, values) when is_list(values) do
-    Map.get(map, key, %{})
+    map
+    |> Map.get(key, %{})
     |> then(fn assigns ->
       assign(assigns, values)
     end)
@@ -100,7 +99,8 @@ defmodule Flamel.Map do
 
   @spec assign(map(), atom(), map()) :: map()
   def assign(map, key, values) when is_map(values) do
-    Map.get(map, key, %{})
+    map
+    |> Map.get(key, %{})
     |> Map.merge(values)
     |> then(fn assigns ->
       Map.put(map, key, assigns)
@@ -118,30 +118,32 @@ defmodule Flamel.Map do
       end)
 
     Enum.reduce(push, assigns, fn {key, value}, acc ->
-      Map.get(acc, key, [])
-      |> then(fn
-        list when is_list(list) ->
-          if is_list(value) do
-            Enum.concat(value, list)
-          else
-            [value | list]
-          end
-
-        list ->
-          list
-      end)
+      acc
+      |> Map.get(key, [])
+      |> handle_pushes(value)
       |> then(fn value ->
         Map.put(acc, key, value)
       end)
     end)
   end
 
+  defp handle_pushes(existing, value) when is_list(existing) do
+    if is_list(value) do
+      Enum.concat(value, existing)
+    else
+      [value | existing]
+    end
+  end
+
+  defp handle_pushes(existing, _value), do: existing
+
   @doc """
   Puts a value in a map if the value for that key is blank
   """
   @spec put_if_blank(map(), binary() | atom(), function()) :: map()
   def put_if_blank(values, key, fun) do
-    Flamel.Map.Indifferent.get(values, key, nil)
+    values
+    |> Flamel.Map.Indifferent.get(key, nil)
     |> then(fn value ->
       if Flamel.blank?(value), do: fun.(), else: value
     end)

@@ -1,8 +1,8 @@
 defmodule Flamel.Context do
   @moduledoc """
-  A Context can be used to in a pipeline to assign data to that future functions 
-  can have access to and transform. It also includes a boolean value that 
-  signals to other functions in the pipeline whether they should process the 
+  A Context can be used to in a pipeline to assign data to that future functions
+  can have access to and transform. It also includes a boolean value that
+  signals to other functions in the pipeline whether they should process the
   context or not.
 
   ## Example

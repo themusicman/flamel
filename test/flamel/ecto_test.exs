@@ -1,13 +1,16 @@
 defmodule Flamel.Ecto.Profile do
+  @moduledoc false
   defstruct first_name: "", last_name: ""
 end
 
 defmodule Flamel.Ecto.User do
+  @moduledoc false
   defstruct id: nil, profile: %Ecto.Association.NotLoaded{}
 end
 
 defmodule Flamel.EctoTest do
   use ExUnit.Case
+
   doctest Flamel.Ecto
 
   describe "loaded?/1" do

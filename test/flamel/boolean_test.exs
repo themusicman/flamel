@@ -1,5 +1,6 @@
 defmodule Flamel.BooleanTest do
   use ExUnit.Case
+
   doctest Flamel.Atom
 
   describe "to/1" do

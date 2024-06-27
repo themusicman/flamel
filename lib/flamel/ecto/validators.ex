@@ -4,6 +4,7 @@ defmodule Flamel.Ecto.Validators do
   """
 
   import Ecto.Changeset, only: [get_field: 2, add_error: 3, validate_required: 3]
+
   alias Ecto.Changeset
 
   @doc """
@@ -15,7 +16,8 @@ defmodule Flamel.Ecto.Validators do
   """
   @spec validate_at_least_one_required(Changeset.t(), [atom()], binary()) :: Changeset.t()
   def validate_at_least_one_required(changeset, fields, msg) when is_list(fields) do
-    Enum.all?(fields, fn field ->
+    fields
+    |> Enum.all?(fn field ->
       Flamel.blank?(get_field(changeset, field))
     end)
     |> if do

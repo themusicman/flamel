@@ -2,10 +2,9 @@ defmodule Flamel.StructTest do
   use ExUnit.Case
 
   defmodule Person do
+    @moduledoc false
     defstruct name: "", dob: ""
   end
-
-  alias Person
 
   describe "fields/1" do
     test "returns a list of fields from passed a struct" do

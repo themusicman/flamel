@@ -1,4 +1,8 @@
 defmodule Flamel.Wrap do
+  @moduledoc """
+  Some helper functions for wrapping and unwraping values in tuples
+  """
+
   @doc """
   Takes an {:ok, value} tuple and returns the value
 
@@ -57,7 +61,7 @@ defmodule Flamel.Wrap do
   end
 
   @doc """
-  Takes an {:error, value} tuple and returns the value or nil 
+  Takes an {:error, value} tuple and returns the value or nil
 
   ## Examples
 
@@ -94,7 +98,7 @@ defmodule Flamel.Wrap do
   def unwrap({:cont, value}), do: value
 
   @doc """
-  Takes a value and wraps it in a tuple with the specified 
+  Takes a value and wraps it in a tuple with the specified
   atom as the first item
 
   ## Examples

@@ -1,5 +1,6 @@
 defmodule FlamelTest do
   use ExUnit.Case
+
   doctest Flamel
 
   describe "unwrap_ok!/1 forwarding" do

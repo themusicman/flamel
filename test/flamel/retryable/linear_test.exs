@@ -1,5 +1,6 @@
 defmodule Flamel.Retryable.LinearTest do
   use ExUnit.Case
+
   doctest Flamel.Retryable.Linear
 
   describe "calc/1 with Flamel.Retryable.Linear" do
