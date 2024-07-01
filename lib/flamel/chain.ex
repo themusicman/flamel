@@ -67,7 +67,7 @@ defmodule Flamel.Chain do
   def to_value(%Chain{assigns: %{value: value}} = _chain), do: value
   def to_value(_), do: nil
 
-  @spec to_value(Chain.t()) :: {:ok, value()} | {:error, String.t(), value()}
+  @spec to_tuple(Chain.t()) :: {:ok, value()} | {:error, String.t(), value()}
   def to_tuple(%Chain{halt?: false, assigns: %{value: value}} = _chain), do: {:ok, value}
   def to_tuple(%Chain{halt?: true, assigns: %{value: value}, reason: reason} = _chain), do: {:error, reason, value}
 
