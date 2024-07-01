@@ -6,7 +6,8 @@ defmodule Flamel.Result do
   import Flamel.Wrap, only: [ok: 1]
 
   @doc """
-  Returns true if the value is an `:ok`, `{:ok, value}`, `{:ok, value, value}`
+  Applies a function to the value of an `{:ok, value}`. The return value of the function is wrapped in an `{:ok, value}` tuple.
+  If the tuple passed to map is an `{:error, reason}` tuple then the function is not applied and the `{:error, reason}` tuple is returned.
 
   ## Examples
 
@@ -20,6 +21,26 @@ defmodule Flamel.Result do
   def map({:ok, value}, func), do: value |> func.() |> ok()
   def map({:ok, value, second_value}, func), do: value |> func.(second_value) |> ok()
   def map(value, _func), do: value
+
+  @doc """
+  Essentially has the same behavior as `Flamel.Result.map/2` but the return value of the function is not automatically wrapped in an `{:ok, value}` tuple. You should return either a `{:ok, value}` tuple or `{:error, reason}` tuple from the function.
+  `Flamel.Result.then/2` should be used when the function can produce an error.
+
+  ## Examples
+
+      iex> Flamel.Result.then({:ok, []}, fn v -> {:ok, ["test" | v]} end)
+      {:ok, ["test"]}
+
+      iex> Flamel.Result.then({:ok, []}, fn _v -> {:error, :bad_arg} end)
+      {:error, :bad_arg}
+
+      iex> Flamel.Result.then({:error, "message"}, fn v -> ["test" | v] end)
+      {:error, "message"}
+  """
+  @spec then(tuple(), fun()) :: tuple()
+  def then({:ok, value}, func), do: func.(value)
+  def then({:ok, value, second_value}, func), do: func.(value, second_value)
+  def then(value, _func), do: value
 
   @doc """
   Returns true if the value is an `:ok`, `{:ok, value}`, `{:ok, value, value}`
