@@ -14,12 +14,14 @@ defmodule Flamel.Chain do
           reason: binary()
         }
 
+  @type value :: any()
+
   defstruct halt?: false, assigns: %{}, reason: nil
 
   @doc """
   Create a new chain with a value. The value is the value that the chain's functions are applied to.
   """
-  @spec new(any()) :: Chain.t()
+  @spec new(value()) :: Chain.t()
   def new(value) do
     Context.assign(%Chain{}, :value, value)
   end
@@ -28,7 +30,7 @@ defmodule Flamel.Chain do
   Creates a function that can be used with `Enum.map/1` to build a chain for each
   item in the enumerable.
   """
-  @spec curry((any() -> any())) :: (any() -> any())
+  @spec curry((value() -> value())) :: (value() -> value())
   def curry(func) do
     fn value ->
       value
@@ -61,12 +63,13 @@ defmodule Flamel.Chain do
     end
   end
 
-  def value(%Chain{assigns: %{value: value}} = _chain), do: value
+  @spec to_value(Chain.t()) :: value()
+  def to_value(%Chain{assigns: %{value: value}} = _chain), do: value
+  def to_value(_), do: nil
 
-  def value(_), do: nil
-
-  def tuple(%Chain{halt?: false, assigns: %{value: value}} = _chain), do: {:ok, value}
-  def tuple(%Chain{halt?: true, assigns: %{value: value}, reason: reason} = _chain), do: {:error, reason, value}
+  @spec to_value(Chain.t()) :: {:ok, value()} | {:error, String.t(), value()}
+  def to_tuple(%Chain{halt?: false, assigns: %{value: value}} = _chain), do: {:ok, value}
+  def to_tuple(%Chain{halt?: true, assigns: %{value: value}, reason: reason} = _chain), do: {:error, reason, value}
 
   defimpl Flamel.Contextable, for: Flamel.Chain do
     use Flamel.Contextable.Base
