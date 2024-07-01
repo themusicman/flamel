@@ -79,17 +79,17 @@ defmodule Flamel.Result do
 
   ## Examples
 
-      iex> Flamel.Result.unwrap_ok!({:ok, []})
+      iex> Flamel.Result.ok!({:ok, []})
       []
 
-      iex> Flamel.Result.unwrap_ok!({:error, "message"})
+      iex> Flamel.Result.ok!({:error, "message"})
       ** (ArgumentError) {:error, "message"} is not an :ok tuple
   """
-  def unwrap_ok!({:ok, value}) do
+  def ok!({:ok, value}) do
     value
   end
 
-  def unwrap_ok!(value) do
+  def ok!(value) do
     raise ArgumentError, message: "#{inspect(value)} is not an :ok tuple"
   end
 
@@ -98,17 +98,17 @@ defmodule Flamel.Result do
 
   ## Examples
 
-      iex> Flamel.Result.unwrap_error!({:ok, []})
+      iex> Flamel.Result.error!({:ok, []})
       ** (ArgumentError) {:ok, []} is not an :error tuple
 
-      iex> Flamel.Result.unwrap_error!({:error, "message"})
+      iex> Flamel.Result.error!({:error, "message"})
       "message"
   """
-  def unwrap_error!({:error, value}) do
+  def error!({:error, value}) do
     value
   end
 
-  def unwrap_error!(value) do
+  def error!(value) do
     raise ArgumentError, message: "#{inspect(value)} is not an :error tuple"
   end
 
@@ -117,17 +117,17 @@ defmodule Flamel.Result do
 
   ## Examples
 
-      iex> Flamel.Result.unwrap_ok_or_nil({:ok, []})
+      iex> Flamel.Result.ok_or_nil({:ok, []})
       []
 
-      iex> Flamel.Result.unwrap_ok_or_nil({:error, "message"})
+      iex> Flamel.Result.ok_or_nil({:error, "message"})
       nil
   """
-  def unwrap_ok_or_nil({:ok, value}) do
+  def ok_or_nil({:ok, value}) do
     value
   end
 
-  def unwrap_ok_or_nil(_) do
+  def ok_or_nil(_) do
     nil
   end
 
@@ -136,17 +136,17 @@ defmodule Flamel.Result do
 
   ## Examples
 
-      iex> Flamel.Result.unwrap_error_or_nil({:ok, []})
+      iex> Flamel.Result.error_or_nil({:ok, []})
       nil
 
-      iex> Flamel.Result.unwrap_error_or_nil({:error, "message"})
+      iex> Flamel.Result.error_or_nil({:error, "message"})
       "message"
   """
-  def unwrap_error_or_nil({:error, value}) do
+  def error_or_nil({:error, value}) do
     value
   end
 
-  def unwrap_error_or_nil(_) do
+  def error_or_nil(_) do
     nil
   end
 end

@@ -5,10 +5,10 @@ defmodule Flamel.Wrap do
 
   defdelegate ok?(value), to: Flamel.Result
   defdelegate error?(value), to: Flamel.Result
-  defdelegate unwrap_ok!(value), to: Flamel.Result
-  defdelegate unwrap_ok_or_nil(value), to: Flamel.Result
-  defdelegate unwrap_error!(value), to: Flamel.Result
-  defdelegate unwrap_error_or_nil(value), to: Flamel.Result
+  defdelegate unwrap_ok!(value), to: Flamel.Result, as: :ok!
+  defdelegate unwrap_ok_or_nil(value), to: Flamel.Result, as: :ok_or_nil
+  defdelegate unwrap_error!(value), to: Flamel.Result, as: :error!
+  defdelegate unwrap_error_or_nil(value), to: Flamel.Result, as: :error_or_nil
 
   @doc """
   Takes an {:ok, value} or {:error, message} tuple and returns the value

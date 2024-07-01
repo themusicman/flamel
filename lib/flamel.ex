@@ -27,13 +27,13 @@ defmodule Flamel do
       if ret, do: ret, else: {:error, e.message}
   end
 
+  defdelegate ok?(value), to: Flamel.Result
+  defdelegate error?(value), to: Flamel.Result
+  defdelegate unwrap(value), to: Flamel.Wrap
   defdelegate unwrap_ok!(value), to: Flamel.Wrap
   defdelegate unwrap_error!(value), to: Flamel.Wrap
   defdelegate unwrap_ok_or_nil(value), to: Flamel.Wrap
   defdelegate unwrap_error_or_nil(value), to: Flamel.Wrap
-  defdelegate unwrap(value), to: Flamel.Wrap
-  defdelegate ok?(value), to: Flamel.Wrap
-  defdelegate error?(value), to: Flamel.Wrap
 
   @doc """
   Checks if something is blank?
