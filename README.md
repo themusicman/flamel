@@ -140,7 +140,7 @@ end
 |> Chain.new()
 |> Chain.apply(&add_one/1)
 |> Chain.apply(&minus_one_if_greater_than_one/1)
-|> Chain.value() == 1
+|> Chain.to_tuple() == {:ok, 1}
 ```
 
 Chains can also be applied to an Enumerable:
@@ -154,7 +154,7 @@ end
 Enum.map([1, 2, 3], Chain.curry(fn chain ->
   chain
   |> Chain.apply(&add_one/1)
-  |> Chain.value()
+  |> Chain.to_value()
 end) == [2, 3, 4]
 ```
 
