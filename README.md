@@ -6,17 +6,18 @@ This package is a bag of helper functions. Some might be questionable but they a
 
 ## Installation
 
-If [available in Hex](https://hex.pm/packages/flamel), the package can be installed
-by adding `flamel` to your list of dependencies in `mix.exs`:
+In your `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:flamel, "~> 1.9.1"}
+    {:flamel, "~> 1.10.0"}
   ]
 end
 ```
+
 or mainline the latest:
+
 ```elixir
 def deps do
   [
