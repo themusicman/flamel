@@ -4,6 +4,38 @@ defmodule Flamel.Wrap do
   """
 
   @doc """
+  Returns true if the value is an `:ok`, `{:ok, value}`, `{:ok, value, value}`
+
+  ## Examples
+
+      iex> Flamel.Wrap.ok?({:ok, []})
+      true
+
+      iex> Flamel.Wrap.ok?({:error, "message"})
+      false
+  """
+  def ok?(:ok), do: true
+  def ok?({:ok, _value}), do: true
+  def ok?({:ok, _value, _second_value}), do: true
+  def ok?(_), do: false
+
+  @doc """
+  Returns true if the value is an `:error`, `{:error, value}`, `{:error, value, value}`
+
+  ## Examples
+
+      iex> Flamel.Wrap.error?({:error, "error message"})
+      true
+
+      iex> Flamel.Wrap.error?({:ok, "message"})
+      false
+  """
+  def error?(:error), do: true
+  def error?({:error, _value}), do: true
+  def error?({:error, _value, _second_value}), do: true
+  def error?(_), do: false
+
+  @doc """
   Takes an {:ok, value} tuple and returns the value
 
   ## Examples

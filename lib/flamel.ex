@@ -32,6 +32,8 @@ defmodule Flamel do
   defdelegate unwrap_ok_or_nil(value), to: Flamel.Wrap
   defdelegate unwrap_error_or_nil(value), to: Flamel.Wrap
   defdelegate unwrap(value), to: Flamel.Wrap
+  defdelegate ok?(value), to: Flamel.Wrap
+  defdelegate error?(value), to: Flamel.Wrap
 
   @doc """
   Checks if something is blank?
@@ -177,7 +179,7 @@ defmodule Flamel do
       true
 
       iex> Flamel.to_boolean(true)
-      true 
+      true
 
       iex> Flamel.to_boolean("N")
       false
@@ -239,7 +241,7 @@ defmodule Flamel do
   Converts to an atom. Warning: This uses `String.to_atom`
 
   ## Examples
-      
+
       iex> Flamel.to_atom(:test)
       :test
 
@@ -261,7 +263,7 @@ defmodule Flamel do
   Converts to an integer
 
   ## Examples
-      
+
       iex> Flamel.to_integer("1")
       1
 
@@ -281,7 +283,7 @@ defmodule Flamel do
 
   @doc """
   Converts to a float
-    
+
   ## Examples
 
       iex> Flamel.to_float("1.2")
