@@ -65,6 +65,9 @@ defmodule Flamel.Chain do
 
   def value(_), do: nil
 
+  def tuple(%Chain{halt?: false, assigns: %{value: value}} = _chain), do: {:ok, value}
+  def tuple(%Chain{halt?: true, assigns: %{value: value, reason: reason}} = _chain), do: {:error, reason, value}
+
   defimpl Flamel.Contextable, for: Flamel.Chain do
     use Flamel.Contextable.Base
   end
