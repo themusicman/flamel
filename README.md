@@ -117,6 +117,49 @@ end
 
 You don't have to use `%Flamel.Context{}` because `Flamel.Context` uses protocols. You can implement the `Flamel.Contextable` protocol for your own data type. Look at the interals of `Flamel.Retryable.Exponential` and `Flamel.Retryable.Linear` for an example.
 
+
+### Chain (experimental)
+
+A chain allows you to apply a sequence of functions to a value. If the function applied reutrns an `{:ok, value}` tuple then the value is updated but if the function returns an `{:error, reason, value}` tuple then the reason is set on the chain and no further functions will be applied to the value.
+
+```elixir
+
+def add_one(value) do
+  {:ok, value + 1}
+end
+
+def minus_one_if_greater_than_one(value) when value > 1 do
+  {:ok, value - 1}
+end
+
+def minus_one_if_greater_than_one(value) do
+  {:ok, value}
+end
+
+1
+|> Chain.new()
+|> Chain.apply(&add_one/1)
+|> Chain.apply(&minus_one_if_greater_than_one/1)
+|> Chain.value() == 1
+```
+
+Chains can also be applied to an Enumerable:
+
+```elixir
+
+def add_one(value) do
+  {:ok, value + 1}
+end
+
+Enum.map([1, 2, 3], Chain.curry(fn chain ->
+  chain
+  |> Chain.apply(&add_one/1)
+  |> Chain.value()
+end) == [2, 3, 4]
+```
+
+
+
 ### Retryable (experimental)
 
 Retryable functions that retry based on different strategies. Right now Linear and Exponential are the only 2 implemented but you can implement your own since the retry strategy uses two protocols (`Flamel.Contextable` and `Flamel.Retryable.Strategy`).
