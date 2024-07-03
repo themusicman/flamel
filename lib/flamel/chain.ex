@@ -63,6 +63,10 @@ defmodule Flamel.Chain do
     end
   end
 
+  def then(%Chain{} = context, func) do
+    Chain.apply(context, func)
+  end
+
   @spec to_value(Chain.t()) :: value()
   def to_value(%Chain{assigns: %{value: value}} = _chain), do: value
   def to_value(_), do: nil

@@ -3,6 +3,7 @@ defmodule Flamel.Wrap do
   Some helper functions for wrapping and unwraping values in tuples
   """
 
+  # For backward compatibility
   defdelegate ok?(value), to: Flamel.Result
   defdelegate error?(value), to: Flamel.Result
   defdelegate unwrap_ok!(value), to: Flamel.Result, as: :ok!
