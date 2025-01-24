@@ -31,10 +31,10 @@ defmodule Flamel.Ecto do
 
   ## Examples
 
-      iex> Flamel.Result.loaded_or_nil({:ok, []})
+      iex> Flamel.Ecto.loaded_or_nil([])
       []
 
-      iex> Flamel.Result.loaded_or_nil({:error, "message"})
+      iex> Flamel.Ecto.loaded_or_nil(%Ecto.Association.NotLoaded{})
       nil
   """
   def loaded_or_nil(%Ecto.Association.NotLoaded{}) do
@@ -42,6 +42,29 @@ defmodule Flamel.Ecto do
   end
 
   def loaded_or_nil(value) do
+    value
+  end
+
+  @doc """
+  Takes an Ecto association value and returns a default value if %Ecto.Association.NotLoaded{} 
+  or the value 
+
+  ## Examples
+
+      iex> Flamel.Ecto.loaded_or([])
+      []
+
+      iex> Flamel.Ecto.loaded_or(%Ecto.Association.NotLoaded{}, 1)
+      1
+  """
+
+  def loaded_or(value, default \\ nil)
+
+  def loaded_or(%Ecto.Association.NotLoaded{}, default) do
+    default
+  end
+
+  def loaded_or(value, _default) do
     value
   end
 
