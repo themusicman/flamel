@@ -24,4 +24,25 @@ defmodule Flamel.Ecto do
   @spec loaded?(struct()) :: boolean()
   def loaded?(%Ecto.Association.NotLoaded{}), do: false
   def loaded?(_), do: true
+
+  @doc """
+  Takes an Ecto association value and returns nil if %Ecto.Association.NotLoaded{} 
+  or the value 
+
+  ## Examples
+
+      iex> Flamel.Result.loaded_or_nil({:ok, []})
+      []
+
+      iex> Flamel.Result.loaded_or_nil({:error, "message"})
+      nil
+  """
+  def loaded_or_nil(%Ecto.Association.NotLoaded{}) do
+    nil
+  end
+
+  def loaded_or_nil(value) do
+    value
+  end
+
 end
